@@ -9,12 +9,15 @@ ProPresenter **Show Directory** = Git working copy (`EHWIYA/pro-presenter-data`)
 | Show Directory | `%USERPROFILE%\Documents\pro-presenter` |
 | PP 콘텐츠 | 재생목록 → `Libraries/*.pro` |
 
-## Git
+## Git 동기화 (agent repo 런처)
 
-- **포함:** Libraries, Playlists, Presets, Themes
-- **제외:** Media/, Configuration/
-- **시작 시 pull:** `launch-worship.bat` (PP 실행 전 `git pull --rebase`)
-- **수동 pull:** `C:\pro-presenter-agent\scripts\sync-assets-repo.ps1`
+| 시점 | 담당 | 방법 |
+|------|------|------|
+| PP 시작 | `launch-worship.bat` | `git pull --rebase` (PP **전**) |
+| 수동 | agent `sync-assets-repo.ps1` | PP 종료 후 |
+| 예배 후 | **이 repo** | `git commit` / `push` |
+
+## Git 추적 / 제외
 
 ## 동기화
 
