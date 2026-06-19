@@ -23,6 +23,7 @@
 | 문서 | 대상 |
 |------|------|
 | [agent.md](handoff/agent.md) | pro-presenter-agent Cursor 복붙 |
+| [theme-profiles.md](handoff/theme-profiles.md) | 테마·재생목록·미디어 정본 |
 
 ## Cursor 첫 메시지 (한 줄)
 
