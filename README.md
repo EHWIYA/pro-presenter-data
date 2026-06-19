@@ -1,34 +1,25 @@
 # pro-presenter-data
 
-ProPresenter **Show Directory** = Git working copy (`EHWIYA/pro-presenter-data`).
+ProPresenter **Show Directory** Git 정본.
 
-## 경로 (모든 현장 PC)
+PWA → NAS API → Windows 에이전트가 `.pro`를 갱신 → PP 재생목록 송출.  
+**4레포 맥락:** [docs/index.md](docs/index.md)
 
-| 항목 | 경로 |
-|------|------|
-| Show Directory | `%USERPROFILE%\Documents\pro-presenter` |
-| PP 콘텐츠 | 재생목록 → `Libraries/*.pro` |
+| 항목 | 값 |
+|------|-----|
+| GitHub | [EHWIYA/pro-presenter-data](https://github.com/EHWIYA/pro-presenter-data) |
+| 로컬 | `%USERPROFILE%\Documents\pro-presenter` |
 
-## Git 동기화 (agent repo 런처)
+## Git (요약)
 
-| 시점 | 담당 | 방법 |
-|------|------|------|
-| PP 시작 | `launch-worship.bat` | `git pull --rebase` (PP **전**) |
-| 수동 | agent `sync-assets-repo.ps1` | PP 종료 후 |
-| 예배 후 | **이 repo** | `git commit` / `push` |
-
-## Git 추적 / 제외
-
-## 동기화
+포함: `Libraries/` `Playlists/` `Presets/` `Themes/` · 제외: `Media/` `Configuration/`
 
 ```powershell
-# ProPresenter 종료 후
-git pull
-# ... 작업 ...
+cd "$env:USERPROFILE\Documents\pro-presenter"
+git pull   # 또는 agent launch-worship.bat (PP 시작 전)
+# PP 종료 후
 git add Libraries/ Playlists/ Presets/ Themes/
-git commit -m "..."
-git push
+git commit -m "..." ; git push
 ```
 
-Cursor 규칙: [`.cursor/rules/`](.cursor/rules/) · [AGENTS.md](AGENTS.md)  
-에이전트 repo handoff: [docs/HANDOFF-TO-AGENT-REPO.md](docs/HANDOFF-TO-AGENT-REPO.md)
+상세: [docs/data/repo.md](docs/data/repo.md) · Cursor: [AGENTS.md](AGENTS.md)
