@@ -1,0 +1,8 @@
+﻿# 대용량·PC별 — Cursor 인덱싱 제외 (Git .gitignore 와 동일)
+Media/
+Configuration/
+
+# 바이너리·백업
+**/*.pro.bak
+**/*.tmp
+**/*.lock

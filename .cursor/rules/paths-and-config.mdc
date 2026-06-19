@@ -1,0 +1,48 @@
+---
+description: 고정 경로·%USERPROFILE%·에이전트 config 연동
+alwaysApply: true
+---
+
+# 경로 규칙 (PC별 최소화)
+
+## 고정 (모든 현장 PC 동일)
+
+```
+Show Directory  = %USERPROFILE%\Documents\pro-presenter
+에이전트 루트    = C:\pro-presenter-agent
+빌드 템플릿      = C:\pro-presenter-agent\template\themes\*.pro  (agent repo)
+PP UI 테마       = Documents\pro-presenter\Themes\              (자산 repo)
+```
+
+## PC마다 다를 수 있는 것 (1개만)
+
+- `Libraries\` **하위 폴더명** (예: `예배`, `Default`) → `paths.standard.json`의 `pp_library_subdir` 참고
+- **절대 금지:** `C:\Users\사용자명\...` 하드코딩 → `%USERPROFILE%` 또는 `%APPDATA%` 사용
+
+## worship-2.pro = 단일 정본
+
+```
+%USERPROFILE%\Documents\pro-presenter\Libraries\{pp_library_subdir}\worship-2.pro
+```
+
+- PP가 쓰는 파일 = Git 추적 파일 (동일 경로)
+- `repo-pull` / `repo-push` 불필요 — 자산 repo에서 `git pull` / `commit` / `push`
+
+## 에이전트 config.json (C:\pro-presenter-agent)
+
+필수 키 (경로는 paths.standard.json과 일치):
+
+- `pp_library_dir` → `%USERPROFILE%\Documents\pro-presenter\Libraries\{subfolder}`
+- `presentation_repo_path` → 위와 **같은** `worship-2.pro` 절대 경로
+- `template_pro` / `theme_templates` → agent repo `template/` (PP Themes와 별개)
+
+## 자동 탐색 한계
+
+`find_pp_library_dir()` / `patch-config.ps1`은 `Documents\pro-presenter`를 우선 탐색하도록 패치됨. 그래도 **config에 pp_library_dir 명시**가 정본.
+
+## 점검
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8787/collect-info
+# library_dir_exists: true, library_pro_exists: true
+```
