@@ -16,10 +16,10 @@ alwaysApply: true
 - `.cursorignore`로 `Media/`, `Configuration/` 제외 — **전체 Media 스캔·commit 시도 금지**
 - `.pro` 파일은 필요할 때만 열기 (용량 큼)
 
-## 에이전트 repo 작업 시
+## 에이전트 repo
 
-- 코드 변경은 `C:\pro-presenter-agent` — **별도 git remote** (pro-presenter-agent)
-- 이 워크스페이스에서 agent Python 수정 요청 시: 경로 명시 후 agent repo에서 작업
+코드·config·launch-worship → **`C:\pro-presenter-agent`** (별 Cursor).  
+넘길 내용: [docs/HANDOFF-TO-AGENT-REPO.md](../../docs/HANDOFF-TO-AGENT-REPO.md)
 
 ## 빌드 → Git 워크플로
 
