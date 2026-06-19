@@ -22,7 +22,7 @@ Documents/pro-presenter/
 
 **콘텐츠 모델:** PP UI = 재생목록 → `Libraries/…/*.pro` 참조. worship-2 단일 정본 개념 없음.
 
-**테마:** agent `template/themes/` = 빌드용 복제 · `Themes/` = PP UI 테마 (별개).
+**테마:** agent `template/themes/` = 빌드용 복제 · `Themes/` = PP UI 테마 (별개). 프로필·재생목록 매핑 → [../handoff/theme-profiles.md](../handoff/theme-profiles.md)
 
 **PP 설정:** Library / Support Files / Media → Show Directory 하위. `%APPDATA%\LocalWorkspaces` 혼용 금지.
 
