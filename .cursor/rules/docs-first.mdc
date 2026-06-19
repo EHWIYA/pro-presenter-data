@@ -1,0 +1,34 @@
+---
+description: 문서 우선·토큰 절약·중복 방지
+alwaysApply: true
+---
+
+# 문서 우선
+
+맥락·아키텍처·E2E 질문 시 **먼저 읽기** — 목차: `docs/index.md`
+
+| 주제 | 파일 |
+|------|------|
+| 4레포·아키텍처·URL | `docs/system/overview.md` |
+| E2E | `docs/system/flows.md` |
+| 레포별 | `docs/system/repos.md` |
+| 이 repo | `docs/data/repo.md` |
+| agent handoff | `docs/handoff/agent.md` |
+
+- 문서 내용 **채팅에 장문 재작성 금지** — 링크·한두 줄 요약
+- 갱신은 **해당 md만** (README·AGENTS는 요약 유지)
+- `.pro` 필요할 때만 열기 · `Media/` `Configuration/` 스캔·commit 금지
+
+## 완료됨 — 재실행 금지
+
+Git init·origin·첫 push · `docs/` 정본화 · launch-worship pull (agent)
+
+## 워크스페이스 경계
+
+| 작업 | 위치 |
+|------|------|
+| PP 자산 Git | **여기** |
+| Python·config·launch | `C:\pro-presenter-agent` |
+| PWA·BFF | 각각 별 repo — **여기서 수정 안 함** |
+
+운영 스냅샷: `docs/system/status.md` 만 갱신.

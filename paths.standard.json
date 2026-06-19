@@ -21,6 +21,9 @@
   },
   "github": {
     "assets_repo": "EHWIYA/pro-presenter-data",
-    "agent_repo": "EHWIYA/pro-presenter-agent"
-  }
+    "agent_repo": "EHWIYA/pro-presenter-agent",
+    "front_end_repo": "EHWIYA/pro-presenter-front-end",
+    "back_end_repo": "EHWIYA/pro-presenter-back-end"
+  },
+  "docs": "docs/index.md — 4레포 시스템 정본"
 }
