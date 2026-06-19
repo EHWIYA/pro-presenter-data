@@ -1,16 +1,23 @@
 {
-  "_doc": "현장 PC 공통 경로 템플릿. PC마다 바뀌는 것은 %USERPROFILE% 뿐. pp_library_subdir는 ProPresenter Libraries 하위 실제 폴더명.",
+  "_doc": "현장 PC 공통 경로. PC마다 바뀌는 것은 %USERPROFILE% 뿐.",
   "show_directory": "%USERPROFILE%\\Documents\\pro-presenter",
   "pp_library_subdir": "예배",
-  "presentation_filename": "worship-2.pro",
-  "presentation_name": "worship-2",
   "agent_root": "C:\\pro-presenter-agent",
   "agent_config": "C:\\pro-presenter-agent\\config.json",
+  "sync_on_launch": {
+    "enabled": true,
+    "command": "launch-worship.bat (PP 시작 전 git pull --rebase)",
+    "manual": "C:\\pro-presenter-agent\\scripts\\sync-assets-repo.ps1"
+  },
   "paths_derived": {
     "pp_library_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Libraries\\예배",
-    "presentation_repo_path": "%USERPROFILE%\\Documents\\pro-presenter\\Libraries\\예배\\worship-2.pro",
     "media_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Media",
+    "playlists_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Playlists",
     "themes_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Themes"
+  },
+  "content_model": {
+    "_doc": "PP UI는 재생목록(Playlists) 기준. 재생목록 항목은 Libraries/*.pro 참조.",
+    "primary_git_paths": ["Libraries/", "Playlists/", "Presets/", "Themes/"]
   },
   "github": {
     "assets_repo": "EHWIYA/pro-presenter-data",

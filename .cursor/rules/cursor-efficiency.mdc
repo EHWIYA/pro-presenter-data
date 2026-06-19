@@ -23,9 +23,13 @@ alwaysApply: true
 
 ## 빌드 → Git 워크플로
 
-1. `python -m pro_presenter_agent build` (agent repo) → `Libraries\…\worship-2.pro` 갱신
+1. `python -m pro_presenter_agent build` → 대상 `Libraries\…\*.pro` 갱신
 2. **여기서** `git status` → `commit` → `push`
-3. agent repo의 `presentations/worship-2.pro`는 레거시 — 신규 정본은 자산 repo
+3. 다른 PC: `launch-worship.bat` 또는 `sync-assets-repo.ps1`로 pull
+
+## PP 시작 시 자동 sync (이미 구현)
+
+`launch-worship.bat` → `git pull --rebase` (PP **실행 전**). 재실행·중복 pull 방지: PP 이미 켜져 있으면 skip.
 
 ## NAS / .env
 

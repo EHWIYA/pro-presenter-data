@@ -7,13 +7,14 @@ ProPresenter **Show Directory** = Git working copy (`EHWIYA/pro-presenter-data`)
 | 항목 | 경로 |
 |------|------|
 | Show Directory | `%USERPROFILE%\Documents\pro-presenter` |
-| worship-2.pro | `Libraries\{subfolder}\worship-2.pro` — [`paths.standard.json`](paths.standard.json) |
-| 에이전트 | `C:\pro-presenter-agent` (별 repo) |
+| PP 콘텐츠 | 재생목록 → `Libraries/*.pro` |
 
 ## Git
 
 - **포함:** Libraries, Playlists, Presets, Themes
-- **제외:** Media/, Configuration/ (NAS rsync 예정)
+- **제외:** Media/, Configuration/
+- **시작 시 pull:** `launch-worship.bat` (PP 실행 전 `git pull --rebase`)
+- **수동 pull:** `C:\pro-presenter-agent\scripts\sync-assets-repo.ps1`
 
 ## 동기화
 
