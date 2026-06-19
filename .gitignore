@@ -1,0 +1,12 @@
+# PC별·대용량 — Git 제외
+Configuration/
+Media/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 임시
+*.tmp
+*.lock
