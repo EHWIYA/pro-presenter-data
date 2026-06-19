@@ -1,48 +1,38 @@
 ---
-description: 고정 경로·%USERPROFILE%·에이전트 config 연동
+description: 고정 경로·재생목록 모델·Git 동기화
 alwaysApply: true
 ---
 
-# 경로 규칙 (PC별 최소화)
+# 경로 · 콘텐츠 모델
 
-## 고정 (모든 현장 PC 동일)
-
-```
-Show Directory  = %USERPROFILE%\Documents\pro-presenter
-에이전트 루트    = C:\pro-presenter-agent
-빌드 템플릿      = C:\pro-presenter-agent\template\themes\*.pro  (agent repo)
-PP UI 테마       = Documents\pro-presenter\Themes\              (자산 repo)
-```
-
-## PC마다 다를 수 있는 것 (1개만)
-
-- `Libraries\` **하위 폴더명** (예: `예배`, `Default`) → `paths.standard.json`의 `pp_library_subdir` 참고
-- **절대 금지:** `C:\Users\사용자명\...` 하드코딩 → `%USERPROFILE%` 또는 `%APPDATA%` 사용
-
-## worship-2.pro = 단일 정본
+## Show Directory (Git = pro-presenter-data)
 
 ```
-%USERPROFILE%\Documents\pro-presenter\Libraries\{pp_library_subdir}\worship-2.pro
+%USERPROFILE%\Documents\pro-presenter
+├── Libraries/   ← .pro 파일 (Git)
+├── Playlists/   ← 재생목록 — Libraries/*.pro 참조 (Git)
+├── Presets/, Themes/  (Git)
+├── Media/, Configuration/  (Git 제외)
 ```
 
-- PP가 쓰는 파일 = Git 추적 파일 (동일 경로)
-- `repo-pull` / `repo-push` 불필요 — 자산 repo에서 `git pull` / `commit` / `push`
+**PP UI:** 재생목록에 표시 → 각 항목이 `Libraries/…/*.pro` 참조. 단일 worship-2 정본 개념 **사용 안 함**.
 
-## 에이전트 config.json (C:\pro-presenter-agent)
+## Git 동기화
 
-필수 키 (경로는 paths.standard.json과 일치):
+| 시점 | 방법 |
+|------|------|
+| **PP 시작** | `launch-worship.bat` → PP 실행 **전** `git pull --rebase` |
+| 수동 | `C:\pro-presenter-agent\scripts\sync-assets-repo.ps1` |
+| 예배 후 공유 | PP **종료** → `git add/commit/push` (자산 repo) |
 
-- `pp_library_dir` → `%USERPROFILE%\Documents\pro-presenter\Libraries\{subfolder}`
-- `presentation_repo_path` → 위와 **같은** `worship-2.pro` 절대 경로
-- `template_pro` / `theme_templates` → agent repo `template/` (PP Themes와 별개)
+충돌 시: rebase 상태에서 파일 수정 → `git add` → `git rebase --continue` (또는 `--abort`)
 
-## 자동 탐색 한계
+## config.json (에이전트)
 
-`find_pp_library_dir()` / `patch-config.ps1`은 `Documents\pro-presenter`를 우선 탐색하도록 패치됨. 그래도 **config에 pp_library_dir 명시**가 정본.
+- `pp_show_directory` — Show Directory
+- `sync_assets_on_launch` — 시작 시 pull (기본 true)
+- `pp_library_dir` — 에이전트 **빌드** 시 .pro 쓰기 대상 (필요 시)
 
-## 점검
+## 절대 금지
 
-```powershell
-Invoke-RestMethod http://127.0.0.1:8787/collect-info
-# library_dir_exists: true, library_pro_exists: true
-```
+`C:\Users\사용자명\...` 하드코딩 → `%USERPROFILE%` 사용
