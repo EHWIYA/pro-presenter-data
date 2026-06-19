@@ -1,10 +1,9 @@
 # Cursor Agent — pro-presenter-data
 
 ProPresenter **자산 Git repo** (`Documents\pro-presenter`).  
-에이전트 코드·런처·NAS 연동 = **`C:\pro-presenter-agent`** ([pro-presenter-agent](https://github.com/EHWIYA/pro-presenter-agent)).
+**에이전트 코드는 이 워크스페이스에서 작업하지 않음** → `C:\pro-presenter-agent` (별 Cursor).
 
-> 에이전트 쪽 전체 맥락: [pro-presenter-agent/docs/PROJECT-CONTEXT.md](https://github.com/EHWIYA/pro-presenter-agent/blob/main/docs/PROJECT-CONTEXT.md)  
-> 에이전트 Cursor 진입: [AGENTS.md (agent)](https://github.com/EHWIYA/pro-presenter-agent/blob/main/AGENTS.md)
+> **에이전트 repo Cursor에게 넘길 handoff:** [docs/HANDOFF-TO-AGENT-REPO.md](docs/HANDOFF-TO-AGENT-REPO.md) ← **복붙용**
 
 ## 빠른 참조
 

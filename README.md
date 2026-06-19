@@ -30,4 +30,5 @@ git commit -m "..."
 git push
 ```
 
-Cursor 규칙: [`.cursor/rules/`](.cursor/rules/) · [AGENTS.md](AGENTS.md)
+Cursor 규칙: [`.cursor/rules/`](.cursor/rules/) · [AGENTS.md](AGENTS.md)  
+에이전트 repo handoff: [docs/HANDOFF-TO-AGENT-REPO.md](docs/HANDOFF-TO-AGENT-REPO.md)
