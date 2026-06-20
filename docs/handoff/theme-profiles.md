@@ -12,7 +12,7 @@ Playlists/Library          ← PP UI 재생목록 (바이너리 protobuf, Git)
 
 Libraries/*.pro            ← 슬라이드 실체 (Git)
 Themes/<그룹>/Theme        ← PP UI 테마 정의 (Git)
-Media/Assets/*             ← 미디어 (Git 제외, NAS rsync)
+Media/Assets/*             ← 미디어 (Git LFS)
 ```
 
 - 재생목록 항목은 **절대경로 + 상대경로** `Libraries/…/*.pro` 둘 다 저장.
@@ -109,7 +109,7 @@ Media/Assets/*             ← 미디어 (Git 제외, NAS rsync)
 | `Media/Assets/apostles_creed_01~03.png` | 사도신경 | 사도신경 |
 | `Media/Assets/hcc_news(26.05.31).mp4` | HCC 뉴스 | Media만 (`.pro` 미연결) |
 
-미디어 Git 제외. 경로는 항상 `ROOT_SHOW` + `Media/Assets/…` 형태로 기록.
+미디어는 `Media/Assets/`에 두고 Git LFS로 commit. 경로는 항상 `ROOT_SHOW` + `Media/Assets/…` 형태로 기록.
 
 ## 새 패턴 발생 시 (data repo 절차)
 
@@ -119,7 +119,7 @@ Media/Assets/*             ← 미디어 (Git 제외, NAS rsync)
    - 연 1~2회·수동 편집 → data만, agent 작업 없음.
    - 주간 반복·`/build`·`/build-song` 대상 → [agent.md](agent.md) § 에이전트 TODO에 항목 추가 후 agent repo 작업.
 4. **검증** — PP 종료 → (agent 빌드 시) `.pro` 확인 → 재생목록 반영.
-5. **commit** — `Libraries/` `Playlists/` `Themes/` (+ agent 쪽 template·config).
+5. **commit** — `Libraries/` `Playlists/` `Themes/` `Media/Assets/` (+ agent 쪽 template·config).
 
 ## Libraries 폴더 ↔ 용도
 

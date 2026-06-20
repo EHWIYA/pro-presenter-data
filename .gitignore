@@ -1,6 +1,11 @@
-# PC별·대용량 — Git 제외
+# PC별 설정
 Configuration/
-Media/
+
+# PP 런타임·캐시 (Git 제외) — 정본은 Media/Assets/ 만
+Media/Downloads/
+Media/Import/
+Media/Imported/
+Media/ProContent/
 
 # OS
 .DS_Store
