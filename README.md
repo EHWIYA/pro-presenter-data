@@ -12,13 +12,13 @@ PWA → NAS API → Windows 에이전트가 `.pro`를 갱신 → PP 재생목록
 
 ## Git (요약)
 
-포함: `Libraries/` `Playlists/` `Presets/` `Themes/` · 제외: `Media/` `Configuration/`
+포함: `Libraries/` `Playlists/` `Presets/` `Themes/` `Media/Assets/` (LFS) · 제외: `Media/` 런타임, `Configuration/`
 
 ```powershell
 cd "$env:USERPROFILE\Documents\pro-presenter"
 git pull   # 또는 agent launch-worship.bat (PP 시작 전)
 # PP 종료 후
-git add Libraries/ Playlists/ Presets/ Themes/
+git add Libraries/ Playlists/ Presets/ Themes/ Media/Assets/
 git commit -m "..." ; git push
 ```
 

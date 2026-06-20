@@ -28,4 +28,4 @@
 
 ## 하지 말 것
 
-에이전트 코드·config 여기 두기 · Media/Configuration commit · git init 재실행
+에이전트 코드·config 여기 두기 · `Media/Assets/`만 LFS commit · `Configuration/` commit 금지 · git init 재실행

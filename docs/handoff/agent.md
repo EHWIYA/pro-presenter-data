@@ -37,7 +37,7 @@
 |------|------|
 | **에이전트 (Python)** | `/build`, `/build-song`, `/trigger`, `.pro` 생성 |
 | **런처 (PowerShell)** | PP↔에이전트 생명주기, 자산 repo `git pull` |
-| **data repo** | `Libraries/` `Playlists/` `Themes/` `Media/` — PP UI 정본 |
+| **data repo** | `Libraries/` `Playlists/` `Themes/` `Media/Assets/` — PP UI 정본 |
 
 ## 워크플로
 
@@ -45,7 +45,7 @@
 |------|--------|
 | 예배 시작 | `launch-worship.bat` |
 | 수동 pull | `scripts\sync-assets-repo.ps1` |
-| 예배 후 자산 공유 | data repo → commit/push |
+| 예배 후 자산 공유 | data repo → commit/push (`Media/Assets/` 포함, LFS) |
 | 점검 | `GET http://127.0.0.1:8787/collect-info` |
 
 ## 에이전트 TODO (data repo 분석 결과)
@@ -100,6 +100,7 @@
 - `Documents\pro-presenter`에 agent `.venv` / config 넣기
 - NAS Docker화
 - 두 repo git remote 혼동
-- `Media/` `Configuration/` 을 data repo에 commit
+- `Configuration/` 을 data repo에 commit
+- `Media/` 런타임 폴더(Downloads·Import 등) commit
 
 전체 맥락: [../system/overview.md](../system/overview.md) · data repo [../index.md](../index.md)
