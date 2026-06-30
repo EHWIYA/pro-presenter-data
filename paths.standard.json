@@ -25,5 +25,14 @@
     "front_end_repo": "EHWIYA/pro-presenter-front-end",
     "back_end_repo": "EHWIYA/pro-presenter-back-end"
   },
-  "docs": "docs/index.md — 4레포 시스템 정본"
+  "docs": "docs/index.md — 4레포 시스템 정본",
+  "platforms": {
+    "macos": {
+      "agent_root": "$HOME/Documents/pro-presenter-agent",
+      "pp_show_directory": "$HOME/Documents/pro-presenter",
+      "pp_library_default": "$HOME/Documents/pro-presenter/Libraries/예배",
+      "portable_home_token": "$HOME",
+      "icloud_policy": "A_disable_desktop_and_documents"
+    }
+  }
 }

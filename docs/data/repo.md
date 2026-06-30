@@ -2,12 +2,22 @@
 
 ## 경로
 
-| OS | Show Directory |
-|----|----------------|
-| Windows | `%USERPROFILE%\Documents\pro-presenter` |
-| Mac | `~/Documents/pro-presenter` |
+| OS | Show Directory | 에이전트 (별도 Git, 자산 repo 밖) |
+|----|----------------|----------------------------------|
+| Windows | `%USERPROFILE%\Documents\pro-presenter` | `C:\pro-presenter-agent` |
+| Mac | `~/Documents/pro-presenter` | `~/Documents/pro-presenter-agent` |
 
 Git working copy = PP Show Directory. 경로 템플릿: [paths.standard.json](../../paths.standard.json)
+
+**Mac iCloud (정책 A, 1회):** 시스템 설정 → Apple ID → iCloud → iCloud Drive → **「바탕화면 및 Documents 폴더」 OFF**. Git·`.pro` 잠금 충돌 방지. 상세: agent repo `docs/agent/macos-paths.md`.
+
+### Mac 최초 clone (자산만)
+
+```bash
+git clone https://github.com/EHWIYA/pro-presenter-data.git "$HOME/Documents/pro-presenter"
+```
+
+PP 설정 → Show Directory를 위 경로로 맞출 것. 에이전트는 형제 폴더 `~/Documents/pro-presenter-agent`에 별도 clone (agent repo 담당).
 
 ## 폴더
 
@@ -42,8 +52,8 @@ Documents/pro-presenter/
 
 | 시점 | 담당 | 동작 |
 |------|------|------|
-| PP 시작 | `launch-worship.bat` | PP **전** `git pull --rebase` |
-| 수동 pull | `sync-assets-repo.ps1` | PP 종료 후 |
+| PP 시작 | `launch-worship.bat` (Win) · `launch-worship.sh` (Mac) | PP **전** `git pull --rebase` |
+| 수동 pull | `sync-assets-repo.ps1` (Win) | PP 종료 후 |
 | 예배 후 | **이 repo** | commit / push |
 
 **launch 순서:** 에이전트 → git pull → PP 시작 → (종료 시) 에이전트 종료.
@@ -63,8 +73,15 @@ git push
 
 ## agent config (이 repo 아님)
 
-`C:\pro-presenter-agent\config.json` — `pp_show_directory`, `pp_library_dir`, `sync_assets_on_launch`
+`config.json`은 Git에 없음. PC마다 portable 토큰만 다름 (`%USERPROFILE%` / `$HOME`).
+
+| OS | 위치 |
+|----|------|
+| Windows | `C:\pro-presenter-agent\config.json` |
+| Mac | `~/Documents/pro-presenter-agent/config.json` |
+
+필드: `pp_show_directory`, `pp_library_dir`, `sync_assets_on_launch` — `paths.standard.json`·agent `paths.py`와 정합.
 
 ## 다른 현장 PC
 
-동일 `.gitignore` → clone 또는 remote add → `paths.standard.json`·agent config만 현장 맞게 조정.
+동일 `.gitignore` → clone 또는 remote add → `paths.standard.json`·agent config만 현장 맞게 조정. Win ↔ Mac 자산 repo 내용은 동일; 절대 경로·런처 스크립트만 OS별.
