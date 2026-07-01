@@ -13,21 +13,25 @@
 
 ## config.json (현장 PC)
 
-`%USERPROFILE%`만 PC마다 다름. 사용자명 하드코딩 금지.
+`%USERPROFILE%`만 PC마다 다름. `theme_templates`·`template_pro`는 코드 기본값과 같으면 생략 가능.
 
 ```json
 {
   "pp_show_directory": "%USERPROFILE%\\Documents\\pro-presenter",
-  "pp_library_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Libraries\\예배",
   "sync_assets_on_launch": true,
-  "presentation_filename": "worship-2.pro",
-  "presentation_repo_path": "%USERPROFILE%\\Documents\\pro-presenter\\Libraries\\예배\\worship-2.pro",
-  "template_pro": "template/worship-template.pro",
+  "template_pro": "template/themes/sermon.pro",
+  "theme_templates": {
+    "sermon": "template/themes/sermon.pro",
+    "reader-context": "template/themes/sermon.pro",
+    "lyric": "template/themes/lyric.pro"
+  },
   "nas_api": "http://100.88.40.125:8003",
   "agent_port": 8787,
   "pp_api": "http://127.0.0.1:12135"
 }
 ```
+
+빌드 시 `library_category`·`presentation_filename`(또는 `song_title`)으로 `Libraries/<카테고리>/<이름>.pro` 지정. 레거시 `worship-2.pro` 단일 경로는 사용하지 않음.
 
 `paths.standard.json`(data repo)과 정합 유지.
 
@@ -46,51 +50,39 @@
 | 예배 시작 | `launch-worship.bat` |
 | 수동 pull | `scripts\sync-assets-repo.ps1` |
 | 예배 후 자산 공유 | data repo → commit/push (`Media/Assets/` 포함, LFS) |
+| PP Themes 수정 후 agent 동기화 | `scripts/dev/export_theme_snapshot.py` ([theme-profiles.md](theme-profiles.md)) |
 | 점검 | `GET http://127.0.0.1:8787/collect-info` |
 
-## 에이전트 TODO (data repo 분석 결과)
+## 테마 템플릿 (완료 · 2026-07-01)
 
-현재 재생목록 `260621_worship_2` = 15개 `Libraries/*.pro` 참조. 상세 매핑은 [theme-profiles.md](theme-profiles.md).
+| 항목 | 상태 |
+|------|------|
+| `template/themes/lyric.pro` | ✅ data `Libraries/찬양` 대표 슬라이드에서 export |
+| `template/themes/sermon.pro` | ✅ data `Libraries/말씀` 대표 슬라이드에서 export |
+| `template/worship-template.pro` | ✅ `sermon.pro`와 동일 (레거시 별칭) |
+| `/build-song` + `lyric` | ✅ 기본 `group_theme_key` · `library_category` |
+| `/build` + `sermon` / `reader-context` | ✅ |
+| `Libraries/<카테고리>/<이름>.pro` 출력 | ✅ API `library_category`·`presentation_filename` |
 
-### 우선순위 1 — `song_lyric` (찬양+성가) 자동 빌드
+### 미등록 (수동 유지)
 
-- **현황:** `theme_templates`에 `reader-context`(말씀)만 있음. 찬양 6곡·찬송가 1곡은 `song_lyric` 프로필인데 agent 키 없음.
-- **PP 원본:** `Themes/찬양+성가/Theme` — element `content_text`, 폰트 `NanumGothicExtraBold`.
-- **요청:**
-  1. PP에서 슬라이드 1장 export → `template/themes/lyric.pro` (또는 동등 이름).
-  2. `config.json` → `theme_templates`에 `"lyric": "template/themes/lyric.pro"` 등록.
-  3. `/build-song` 기본 `group_theme_key`를 `lyric`으로 (또는 요청별 지정).
-  4. 출력 경로: `Libraries/찬양/<곡명>.pro` (재생목록은 data에서 수동·별도 자동화).
+`worship_text`, `worship_titled`, `bg_image`, `image_sequence`, `mixed`, `empty` — [theme-profiles.md](theme-profiles.md).
 
-### 우선순위 2 — 빌드 출력 경로 모델 정합
+### 검증
 
-- **현황:** config `pp_library_dir` = `Libraries/예배`, `presentation_filename` = `worship-2.pro` — **레거시 단일 파일 모델**.
-- **실제:** 재생목록이 카테고리별 `.pro` 15개 참조. `worship-2.pro`는 재생목록에 없음.
-- **요청:** `/build`·`/build-song`이 `Libraries/<카테고리>/<이름>.pro`에 쓰도록 API·config 확장 (카테고리·파일명 파라미터 또는 convention).
+```powershell
+cd C:\pro-presenter-agent
+.\.venv\Scripts\python.exe -m unittest tests.test_theme_templates tests.test_build_song_lyric_smoke -v
+.\.venv\Scripts\python.exe -m pro_presenter_agent.cli.main inspect-template
+```
 
-### 우선순위 3 — (선택) 추가 `theme_templates`
-
-| 프로필 | elements | 빈도 | 권장 |
-|--------|----------|------|------|
-| `worship_text` | content_box + content_text | 낮음 | 필요 시 |
-| `worship_titled` | title + content 4종 | 낮음 | 필요 시 |
-| `bg_image` | fill.media + bg_worship_2.png | 중간 | 미디어 경로 파라미터화 검토 |
-| `mixed` / `empty` | 새가족, 성가곡, HCC뉴스 | 일회성 | **자동화 보류** |
-
-### 미디어 규칙 (빌드 시)
-
-- Show Directory 상대경로: `Media/Assets/…`
-- 공통 배경: `Media/Assets/bg_worship_2.png` (4개 .pro에서 사용)
-- 절대경로 `C:\Users\…` 하드코딩 금지 — `ROOT_SHOW` + `local.path` 패턴 유지.
-
-### 검증 체크리스트
-
-1. `lyric` 키로 빌드한 `.pro` 첫 슬라이드 = `content_text` + `NanumGothicExtraBold`.
-2. `reader-context` 빌드 = `title_*` + `content_*` 4 element (기존과 동일).
-3. 빌드 결과를 PP 재생목록에 넣었을 때 슬라이드·미디어 정상 표시.
+1. `lyric` 빌드 첫 슬라이드 = `content_text` only.
+2. `sermon` / `reader-context` = `title_*` + `content_*` 4 element.
+3. PP 재생목록에 넣었을 때 슬라이드·미디어 정상 표시.
 
 ## 레거시 (사용 줄임)
 
+- `presentation_filename` = `worship-2.pro` 고정 config
 - agent `presentations/worship-2.pro` — data repo로 이전됨
 - `Libraries/예배/worship-2.pro` — 재생목록 미사용
 - `repo-pull` / `repo-push` — library path = repo path면 불필요

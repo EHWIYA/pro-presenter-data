@@ -1,7 +1,39 @@
 # 테마 프로필 · 재생목록 · 미디어 (data repo 정본)
 
-> 2026-06-19 기준. PP Show Directory `Libraries/`·`Playlists/`·`Themes/` 실측.
-> 에이전트 빌드 연동은 [agent.md](agent.md) § 에이전트 TODO.
+> 2026-07-01 갱신. PP Show Directory `Libraries/`·`Playlists/`·`Themes/` 실측.
+> 에이전트 연동: [agent.md](agent.md) · 스냅샷 export는 agent `scripts/dev/export_theme_snapshot.py`.
+
+## PP 테마 vs 프로필 vs agent
+
+PP **테마** = `Themes/<이름>/Theme` 안에 **테마 슬라이드(레이아웃 템플릿) N장**. Libraries 슬라이드 수와 무관.
+
+| 프로필 (정본 키) | PP Theme | 대표 테마 슬라이드 | agent `theme_templates` | agent 스냅샷 |
+|------------------|----------|-------------------|-------------------------|--------------|
+| `song_lyric` | `Themes/찬양+성가` | 가운데 `content_text` (2장 중 기본) | `lyric` | `template/themes/lyric.pro` |
+| `sermon` | `Themes/말씀` | 4장 중 제목+본문 4 element (기본) | `sermon`, `reader-context`(별칭) | `template/themes/sermon.pro` |
+| `worship_text` | — | — | 미등록 | 수동 |
+| `worship_titled` | — | — | 미등록 | 수동 |
+| `bg_image` | — | — | 미등록 | 수동 |
+| `image_sequence` | — | — | 미등록 | 수동 |
+| `mixed` / `empty` | — | — | 미등록 | 수동 |
+
+- **디자인 정본:** PP `Themes/` → Libraries에 적용(베이크) → 필요 시 Libraries 대표 `.pro` 첫 슬라이드를 agent에 **re-export**.
+- **자동 빌드:** agent는 `template/themes/*.pro`만 사용 (PP `Themes/` 파일 형식과 다름).
+
+### 스냅샷 재동기화 (PP Themes 수정 후)
+
+```powershell
+cd C:\pro-presenter-agent
+.\.venv\Scripts\python.exe scripts\dev\export_theme_snapshot.py `
+  --src "$env:USERPROFILE\Documents\pro-presenter\Libraries\찬양\먼저 그 나라와 의를 구하라.pro" `
+  --dest template/themes/lyric.pro --name lyric-template
+.\.venv\Scripts\python.exe scripts\dev\export_theme_snapshot.py `
+  --src "$env:USERPROFILE\Documents\pro-presenter\Libraries\말씀\260621-말씀.pro" `
+  --dest template/themes/sermon.pro --name sermon-template
+Copy-Item template\themes\sermon.pro template\worship-template.pro -Force
+```
+
+검증: agent repo에서 `python -m pro_presenter_agent.cli.main inspect-template` · `unittest tests.test_theme_templates`.
 
 ## 콘텐츠 모델
 
@@ -55,7 +87,7 @@ Media/Assets/*             ← 미디어 (Git LFS)
 | 폰트 | `NanumGothicExtraBold` |
 | 배경 | 녹색 틴트 (`background_color.green ≈ 0.502`) |
 | Libraries | `찬양/`, `찬송가/` |
-| agent | **미등록** — `theme_templates`에 키 없음 |
+| agent | `lyric` → `template/themes/lyric.pro` · `/build-song` 기본 키 |
 
 ### `sermon` — 말씀
 
@@ -65,7 +97,7 @@ Media/Assets/*             ← 미디어 (Git LFS)
 | elements | `title_box`, `title_text`, `content_box`, `content_text` |
 | 폰트 | `NanumGothicBold`, `NanumGothicExtraBold`, `ArialMT` |
 | Libraries | `말씀/` |
-| agent | `theme_key: reader-context` → `template/worship-template.pro` |
+| agent | `sermon` / `reader-context` → `template/themes/sermon.pro` · `/build` |
 
 ### `worship_text` — 예배 간이 텍스트
 
