@@ -71,6 +71,19 @@ git push
 
 **충돌:** 수정 → `git add` → `git rebase --continue` (또는 `--abort`).
 
+## 곡 정본 (Libraries)
+
+곡 슬라이드 실체는 `Libraries/{찬양|찬송가|성가곡}/<제목>.pro` 만 main에 둔다. (예배·말씀·교독문 등 비곡 콘텐츠는 별도 카테고리.)
+
+| 규칙 | 내용 |
+|------|------|
+| 파일 stem | API `songId` 제목과 **완전 일치** (예: `413.내 평생에 가는 길` ≠ `413.내 평생`) |
+| fixture 금지 | `성가테스트`, `테스트곡`, `빌드곡`, `주님의 마음` mock 등 — data repo에 commit 안 함 |
+| 생성 경로 | agent `/build-song` → Show Directory `Libraries/` (BFF API로 곡 저장 ❌) |
+| 예배 후 | PP 편집 → commit/push → revision을 서버·에이전트·현장 PC에 공유 → `launch-worship` 또는 `sync-assets-repo` pull |
+
+**완료 기준:** main에 운영 곡만 존재 · push 후 `git rev-parse HEAD` revision 공유.
+
 ## agent config (이 repo 아님)
 
 `config.json`은 Git에 없음. PC마다 portable 토큰만 다름 (`%USERPROFILE%` / `$HOME`).
