@@ -13,11 +13,12 @@
     "pp_library_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Libraries\\예배",
     "media_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Media",
     "playlists_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Playlists",
-    "themes_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Themes"
+    "themes_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Themes",
+    "fonts_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Fonts"
   },
   "content_model": {
     "_doc": "PP UI는 재생목록(Playlists) 기준. 재생목록 항목은 Libraries/*.pro 참조.",
-    "primary_git_paths": ["Libraries/", "Playlists/", "Presets/", "Themes/", "Media/Assets/"]
+    "primary_git_paths": ["Libraries/", "Playlists/", "Presets/", "Themes/", "Fonts/", "Media/Assets/"]
   },
   "github": {
     "assets_repo": "EHWIYA/pro-presenter-data",

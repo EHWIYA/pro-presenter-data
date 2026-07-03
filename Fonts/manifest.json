@@ -1,0 +1,28 @@
+{
+  "_doc": "ProPresenter가 참조하는 글꼴 패밀리명 ↔ 정본 파일. OS 설치는 에이전트 런처 담당.",
+  "version": 1,
+  "license": "OFL.txt",
+  "source": "https://github.com/google/fonts/tree/main/ofl/nanumgothic",
+  "fonts": [
+    {
+      "file": "NanumGothic-Regular.ttf",
+      "family": "Nanum Gothic",
+      "pp_face_names": ["NanumGothic", "NanumGothicR"],
+      "used_in": []
+    },
+    {
+      "file": "NanumGothic-Bold.ttf",
+      "family": "Nanum Gothic",
+      "style": "Bold",
+      "pp_face_names": ["NanumGothicBold", "NanumGothicBoldR"],
+      "used_in": ["Themes/말씀", "template/themes/sermon.pro (agent 스냅샷)"]
+    },
+    {
+      "file": "NanumGothic-ExtraBold.ttf",
+      "family": "Nanum Gothic",
+      "style": "ExtraBold",
+      "pp_face_names": ["NanumGothicExtraBold", "NanumGothicExtraBoldR"],
+      "used_in": ["Themes/찬양+성가", "Libraries/찬양/*.pro", "template/themes/lyric.pro (agent 스냅샷)"]
+    }
+  ]
+}

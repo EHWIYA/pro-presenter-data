@@ -26,6 +26,7 @@ Documents/pro-presenter/
   Libraries/        ← .pro (Git) — 에이전트 build
   Playlists/        ← 재생목록 (Git) — PP UI 표시 기준
   Presets/, Themes/ ← Git
+  Fonts/            ← Git LFS (정본 글꼴 바이너리)
   Media/Assets/     ← Git LFS (정본 미디어)
   Media/Downloads|Import|Imported|ProContent/ ← gitignore (PP 런타임)
   Configuration/    ← gitignore — PC별
@@ -39,10 +40,12 @@ Documents/pro-presenter/
 
 ## Git
 
-**포함:** `Libraries/`, `Playlists/`, `Presets/`, `Themes/`, `Media/Assets/` (Git LFS)  
+**포함:** `Libraries/`, `Playlists/`, `Presets/`, `Themes/`, `Fonts/`, `Media/Assets/` (Git LFS)  
 **제외:** `Media/` 런타임 하위, `Configuration/`, `.env`
 
-**LFS:** `.gitattributes` — `*.png` `*.jpg` `*.mp4` 등. 각 PC에 [Git LFS](https://git-lfs.com/) 설치·`git lfs install` 1회. `launch-worship` pull 시 LFS 객체 함께 내려받음.
+**글꼴:** PP는 OS 설치 글꼴만 참조. 바이너리 정본 = `Fonts/` + `manifest.json`. OS 설치는 에이전트 런처 → [../handoff/fonts.md](../handoff/fonts.md).
+
+**LFS:** `.gitattributes` — `*.png` `*.jpg` `*.mp4` `*.ttf` `*.otf` 등. 각 PC에 [Git LFS](https://git-lfs.com/) 설치·`git lfs install` 1회. `launch-worship` pull 시 LFS 객체 함께 내려받음.
 
 - `origin` = `https://github.com/EHWIYA/pro-presenter-data`
 - init·remote add **이미 완료** — 재실행 금지
@@ -62,7 +65,7 @@ pull skip: PP 이미 실행 중 · `-SkipAssetsSync` · rebase 충돌 시 launch
 
 ```powershell
 cd "$env:USERPROFILE\Documents\pro-presenter"
-git add Libraries/ Playlists/ Presets/ Themes/ Media/Assets/
+git add Libraries/ Playlists/ Presets/ Themes/ Fonts/ Media/Assets/
 git commit -m "..."
 git push
 ```
