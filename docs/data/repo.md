@@ -75,6 +75,8 @@ git push
 
 `Playlists/Library` 항목은 `local.path`(`ROOT_SHOW` + `Libraries/…`)가 **공통 정본**이다. Git에는 `absolute_string`을 `%USERPROFILE%\Documents\pro-presenter\…` portable 형태로 맞춘다 (에이전트 `normalize-playlists`, launch pull/push 시 자동). PP 종료 후 push 전에 **같은 곡이 재생목록에 두 번** 있으면 자동 제거된다.
 
+**라이브러리 UI 중복:** macOS는 PP가 `~/Library/Application Support/.../UserWorkspaces/<show>/Libraries/LibraryData` 에 별도 인덱스를 둔다. 여기에 같은 `.pro`가 2번 등록되면 라이브러리/찬양 목록이 2배로 보인다. `normalize-playlists`가 Show Directory와 UserWorkspaces `LibraryData` 중복도 함께 제거한다. **PP 완전 종료 후** 실행·launch.
+
 수동: `python -m pro_presenter_agent normalize-playlists --show-dir ~/Documents/pro-presenter --mode git`
 
 ## 곡 정본 (Libraries)
