@@ -71,6 +71,12 @@ git push
 
 **충돌:** 수정 → `git add` → `git rebase --continue` (또는 `--abort`).
 
+### 재생목록 (Win · Mac)
+
+`Playlists/Library` 항목은 `local.path`(`ROOT_SHOW` + `Libraries/…`)가 **공통 정본**이다. Git에는 `absolute_string`을 `%USERPROFILE%\Documents\pro-presenter\…` portable 형태로 맞춘다 (에이전트 `normalize-playlists`, launch pull/push 시 자동). PP 종료 후 push 전에 **같은 곡이 재생목록에 두 번** 있으면 자동 제거된다.
+
+수동: `python -m pro_presenter_agent normalize-playlists --show-dir ~/Documents/pro-presenter --mode git`
+
 ## 곡 정본 (Libraries)
 
 곡 슬라이드 실체는 `Libraries/{찬양|찬송가|성가곡}/<제목>.pro` 만 main에 둔다. (예배·말씀·교독문 등 비곡 콘텐츠는 별도 카테고리.)
