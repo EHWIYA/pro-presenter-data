@@ -2,7 +2,7 @@
 
 **`C:\pro-presenter-agent` Cursor 대화에 붙여넣기.** 코드 변경은 agent repo에서만.
 
-테마·재생목록·미디어 정본: [theme-profiles.md](theme-profiles.md)
+테마·재생목록·미디어 정본: [theme-profiles.md](theme-profiles.md) · 글꼴 OS 설치: [fonts.md](fonts.md)
 
 ## Repo 분리
 
@@ -41,7 +41,7 @@
 |------|------|
 | **에이전트 (Python)** | `/build`, `/build-song`, `/trigger`, `.pro` 생성 |
 | **런처 (PowerShell)** | PP↔에이전트 생명주기, 자산 repo `git pull` |
-| **data repo** | `Libraries/` `Playlists/` `Themes/` `Media/Assets/` — PP UI 정본 |
+| **data repo** | `Libraries/` `Playlists/` `Themes/` `Fonts/` `Media/Assets/` — PP UI·글꼴 정본 |
 
 ## 워크플로
 
