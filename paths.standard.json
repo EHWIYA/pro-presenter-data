@@ -24,7 +24,13 @@
       "pp_show_directory": "$HOME/Documents/pro-presenter",
       "pp_library_default": "$HOME/Documents/pro-presenter/Libraries/예배",
       "portable_home_token": "$HOME",
+      "git_portable_root": "%USERPROFILE%\\Documents\\pro-presenter",
+      "_doc_git_portable": "Git 객체는 Win·Mac 공통으로 %USERPROFILE%\\… (백슬래시). Mac working tree는 setup-git-filters.sh smudge가 /Users/… 로 펼침.",
+      "setup": "./scripts/setup-git-filters.sh",
       "icloud_policy": "A_disable_desktop_and_documents"
+    },
+    "windows": {
+      "setup": "powershell -File scripts/setup-git-filters.ps1"
     }
   }
 }

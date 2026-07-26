@@ -24,7 +24,8 @@
 | 원격 | `github.com/EHWIYA/pro-presenter-data` |
 | 경로 | `%USERPROFILE%\Documents\pro-presenter` |
 | PP UI | 재생목록 → `Libraries/*.pro` |
+| 신규 PC | Win: `scripts/setup-git-filters.ps1` · Mac: `scripts/setup-git-filters.sh` |
 
 ## 하지 말 것
 
-`Media/Assets/`만 LFS commit · `Configuration/` commit 금지 · git init 재실행
+`Media/Assets/`만 LFS commit · `Configuration/` commit 금지 · git init 재실행 · 재생목록 경로 수동 문자열 치환
