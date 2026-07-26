@@ -55,11 +55,25 @@ Documents/pro-presenter/
 
 | 시점 | 동작 |
 |------|------|
-| PP 시작 전 | `git pull --rebase` (PP 종료 상태) |
-| 예배 후 | **이 repo** commit / push |
+| **신규 PC 1회** | Win: `powershell -File scripts/setup-git-filters.ps1` · Mac: `./scripts/setup-git-filters.sh` |
+| PP 시작 전 | `git pull --rebase` (PP 종료) → 경로 **자동** smudge |
+| 예배 후 | `git add` / `commit` / `push` → 경로 **자동** clean (Git=portable) |
 
 ```powershell
+# Windows
 cd "$env:USERPROFILE\Documents\pro-presenter"
+# powershell -File scripts/setup-git-filters.ps1   # 신규만 1회
+git pull --rebase
+git add Libraries/ Playlists/ Presets/ Themes/ Fonts/ Media/Assets/
+git commit -m "..."
+git push
+```
+
+```bash
+# macOS
+cd "$HOME/Documents/pro-presenter"
+# chmod +x scripts/setup-git-filters.sh && ./scripts/setup-git-filters.sh   # 신규만 1회
+git pull --rebase
 git add Libraries/ Playlists/ Presets/ Themes/ Fonts/ Media/Assets/
 git commit -m "..."
 git push
@@ -67,9 +81,16 @@ git push
 
 **충돌:** 수정 → `git add` → `git rebase --continue` (또는 `--abort`).
 
-### 재생목록 (Win · Mac)
+### 재생목록 경로 (Win · Mac)
 
-`Playlists/Library` 항목은 `local.path`(`ROOT_SHOW` + `Libraries/…`)가 **공통 정본**이다. Git에는 `absolute_string`을 `%USERPROFILE%\Documents\pro-presenter\…` portable 형태로 맞춘다.
+| 위치 | Windows | macOS |
+|------|---------|-------|
+| **Git 객체 (공통)** | `%USERPROFILE%\Documents\pro-presenter\…` | 동일 (백슬래시 portable) |
+| **working tree (PP용)** | `C:\Users\<계정>\Documents\pro-presenter\…` | `/Users/<계정>/Documents/pro-presenter/…` |
+
+`Playlists/Library` · `Playlists/Media` · `Libraries/LibraryData`는 Git **pp-paths** clean/smudge filter + `scripts/githooks`가 변환한다. Mac에서는 portable→POSIX 경로로 바꿀 때 **구분자(`/`)까지** 맞춘다. 상대 경로 `Libraries/…`는 OS 공통(슬래시).
+
+문자열만 바꾸면 protobuf 길이 필드가 깨져 재생목록이 사라짐 → 반드시 이 스크립트 사용.
 
 **라이브러리 UI 중복:** macOS는 PP가 `~/Library/Application Support/.../UserWorkspaces/<show>/Libraries/LibraryData` 에 별도 인덱스를 둔다. 여기에 같은 `.pro`가 2번 등록되면 라이브러리/찬양 목록이 2배로 보인다. **PP 완전 종료 후** 정리.
 
@@ -87,4 +108,11 @@ git push
 
 ## 다른 현장 PC
 
-동일 `.gitignore` → clone 또는 remote add → `paths.standard.json`만 현장 맞게 조정. Win ↔ Mac 자산 repo 내용은 동일; 절대 경로만 OS별.
+동일 `.gitignore` → clone 후 setup **1회** → Show Directory를 OS별 경로로.
+
+| OS | setup |
+|----|-------|
+| Windows | `powershell -File scripts/setup-git-filters.ps1` |
+| macOS | `./scripts/setup-git-filters.sh` |
+
+Win ↔ Mac 자산 내용은 동일. 절대 경로·구분자는 filter가 PC별로 맞춤. Mac는 iCloud「바탕화면 및 Documents」OFF (위 정책 A).

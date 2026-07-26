@@ -25,7 +25,8 @@ alwaysApply: true
 
 | 시점 | 동작 |
 |------|------|
-| 시작 전 | `git pull` (PP 종료 상태) |
-| 예배 후 | 이 repo commit/push |
+| 신규 PC 1회 | Win: `scripts/setup-git-filters.ps1` · Mac: `scripts/setup-git-filters.sh` |
+| 시작 전 | `git pull` (PP 종료) — 경로 smudge 자동 |
+| 예배 후 | 이 repo commit/push — 경로 clean 자동 |
 
 상세: `docs/data/repo.md`

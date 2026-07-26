@@ -1,0 +1,14 @@
+#!/bin/sh
+# After pull/rebase/checkout: expand playlist paths to this PC.
+cd "$(git rev-parse --show-toplevel)" || exit 0
+if command -v python >/dev/null 2>&1; then
+  PY=python
+elif command -v python3 >/dev/null 2>&1; then
+  PY=python3
+elif command -v py >/dev/null 2>&1; then
+  PY="py -3"
+else
+  echo "pp-paths: python not found; skip smudge" >&2
+  exit 0
+fi
+$PY scripts/pp_path_normalize.py smudge-files
