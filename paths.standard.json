@@ -1,14 +1,7 @@
 {
-  "_doc": "현장 PC 공통 경로. PC마다 바뀌는 것은 %USERPROFILE% 뿐.",
+  "_doc": "현장 PC 공통 경로. PC마다 바꾸는 값만 %USERPROFILE% 등.",
   "show_directory": "%USERPROFILE%\\Documents\\pro-presenter",
   "pp_library_subdir": "예배",
-  "agent_root": "C:\\pro-presenter-agent",
-  "agent_config": "C:\\pro-presenter-agent\\config.json",
-  "sync_on_launch": {
-    "enabled": true,
-    "command": "launch-worship.bat (PP 시작 전 git pull --rebase)",
-    "manual": "C:\\pro-presenter-agent\\scripts\\sync-assets-repo.ps1"
-  },
   "paths_derived": {
     "pp_library_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Libraries\\예배",
     "media_dir": "%USERPROFILE%\\Documents\\pro-presenter\\Media",
@@ -22,14 +15,12 @@
   },
   "github": {
     "assets_repo": "EHWIYA/pro-presenter-data",
-    "agent_repo": "EHWIYA/pro-presenter-agent",
     "front_end_repo": "EHWIYA/pro-presenter-front-end",
     "back_end_repo": "EHWIYA/pro-presenter-back-end"
   },
-  "docs": "docs/index.md — 4레포 시스템 정본",
+  "docs": "docs/index.md",
   "platforms": {
     "macos": {
-      "agent_root": "$HOME/Documents/pro-presenter-agent",
       "pp_show_directory": "$HOME/Documents/pro-presenter",
       "pp_library_default": "$HOME/Documents/pro-presenter/Libraries/예배",
       "portable_home_token": "$HOME",
