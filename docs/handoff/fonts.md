@@ -1,7 +1,6 @@
-# Handoff → 글꼴 OS 설치 (에이전트·런처)
+# Handoff → 글꼴 OS 설치
 
-**자산 정본:** `Fonts/` · `Fonts/manifest.json` (data repo, Git LFS).  
-**이 문서 독자:** `C:\pro-presenter-agent` — `launch-worship`·`sync-assets`·`collect-info` 구현.
+**자산 정본:** `Fonts/` · `Fonts/manifest.json` (data repo, Git LFS).
 
 ## 배경
 
@@ -20,21 +19,12 @@
   OFL.txt
 ```
 
-## 요청 작업 (에이전트팀)
-
-| # | 작업 | 비고 |
-|---|------|------|
-| 1 | `install-fonts.ps1` / `install-fonts.sh` | `manifest.json` 순회 → OS 글꼴 디렉터리에 설치 (이미 동일 버전이면 skip) |
-| 2 | `launch-worship`·`sync-assets` | 자산 `git pull` **직후**, PP 시작 **전**에 (1) 실행 |
-| 3 | `collect-info` (선택) | manifest `pp_face_names` 설치 여부 반환 |
-| 4 | 실패 정책 (선택) | 필수 글꼴 미설치 시 launch 경고 또는 중단 |
-
-### OS 경로 (참고)
+## 설치 요령
 
 | OS | 설치 대상 |
 |----|-----------|
-| Windows | `%WINDIR%\Fonts` (관리자 권한 없이 per-user 설치 API 가능 시 우선 검토) |
-| macOS | `~/Library/Fonts/` 또는 `Font Book` CLI |
+| Windows | `%WINDIR%\Fonts` 또는 사용자 글꼴 폴더 (폰트 파일 더블클릭·설치) |
+| macOS | `~/Library/Fonts/` 또는 Font Book |
 
 ### manifest 스키마
 
@@ -69,10 +59,9 @@
 - [x] Git LFS (`.ttf`/`.otf`)
 - [x] `docs/data/repo.md`·`paths.standard.json` 갱신
 
-## 검증 (에이전트 구현 후)
+## 검증
 
-1. 글꼴 미설치 PC에서 `launch-worship` → pull 후 자동 설치.
+1. 글꼴 미설치 PC에서 pull 후 OS에 글꼴 설치.
 2. PP에서 `Themes/찬양+성가`·`Themes/말씀` 미리보기 글꼴 정상.
-3. `/build-song` 신규 곡 슬라이드 글꼴 = ExtraBold.
 
-관련: [agent.md](agent.md) · [theme-profiles.md](theme-profiles.md)
+관련: [theme-profiles.md](theme-profiles.md)
