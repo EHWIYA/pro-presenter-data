@@ -5,13 +5,17 @@ Git filter:
   clean  — working tree absolute → Git portable (%USERPROFILE%\\Documents\\pro-presenter)
   smudge — Git portable (or other-PC absolute) → this PC absolute
 
+Also NFC-normalizes Hangul in path strings (Mac NFD / percent-encoded file: URLs
+break Windows because the show-dir files are NFC).
+
 CLI:
   clean | smudge          stdin → stdout (git filter)
   clean-files | smudge-files   rewrite on-disk targets in-place
   status                  print path-style counts for targets
 
 Win · Mac:
-  Git 정본은 Windows portable(백슬래시). Mac working tree는 /Users/… (슬래시).
+  Git 정본은 Windows portable(백슬래시) + NFC 한글 경로.
+  Mac working tree는 /Users/… (슬래시).
   상대 경로 Libraries/… 는 항상 슬래시 유지.
 """
 from __future__ import annotations
@@ -19,6 +23,8 @@ from __future__ import annotations
 import pathlib
 import re
 import sys
+import unicodedata
+from urllib.parse import quote, unquote
 
 TARGETS = (
     "Playlists/Library",
@@ -70,31 +76,33 @@ def _path_end(data: bytes, start: int) -> int:
     return i
 
 
-def portable_lengths_ok(data: bytes) -> bool:
-    token = b"%USERPROFILE%\\Documents\\pro-presenter"
-    j = data.find(token)
-    if j < 1:
-        # also accept posix-ish portable
-        j = data.find(b"%USERPROFILE%/Documents/pro-presenter")
-        if j < 1:
-            return True
-    end = _path_end(data, j)
-    actual = end - j
-    declared = data[j - 1]
-    return declared == actual
+def _parses_ok(data: bytes) -> bool:
+    try:
+        parse_fields(data, 0, len(data))
+        return True
+    except Exception:
+        return False
 
 
 def repair_broken_portable(data: bytes) -> bytes:
-    """Expand %USERPROFILE% → legacy abs prefix so stale length prefixes match again."""
+    """Repair old naive portableize (length still = legacy abs, body has %USERPROFILE%).
+
+    Only blind-expand when current bytes do NOT parse and legacy expansion DOES.
+    Never expand when portable already parses — that corrupts length prefixes
+    (e.g. file:\\\\%USERPROFILE%\\… where byte-before-token is not a length).
+    """
     if b"%USERPROFILE%" not in data:
         return data
-    if portable_lengths_ok(data):
+    if _parses_ok(data):
         return data
     legacy = _LEGACY_USER_PREFIX.encode("utf-8")
     token = b"%USERPROFILE%"
     if len(legacy) <= len(token):
         return data
-    return data.replace(token, legacy)
+    expanded = data.replace(token, legacy)
+    if _parses_ok(expanded):
+        return expanded
+    return data
 
 
 def encode_varint(n: int) -> bytes:
@@ -208,6 +216,51 @@ def fix_abs_separators(val: bytes, style: str) -> bytes:
     return val
 
 
+def is_path_like(val: bytes) -> bool:
+    return (
+        is_relative_library_path(val)
+        or is_absolute_show_path(val)
+        or val.startswith(b"file:")
+    )
+
+
+def normalize_path_unicode(val: bytes) -> bytes:
+    """Mac PP stores Hangul paths as NFD (often percent-encoded in file: URLs).
+
+    Windows show-dir files are NFC — NFD path strings do not resolve → broken playlists.
+    Git portable form is NFC so both OSes can open the same blobs after smudge.
+    """
+    if not is_path_like(val):
+        return val
+    try:
+        s = val.decode("utf-8")
+    except UnicodeDecodeError:
+        return val
+
+    if val.startswith(b"file:") and b"%" in val:
+        if s.startswith("file:\\\\"):
+            lead, body = "file:\\\\", s[7:]
+        elif s.startswith("file://"):
+            lead, body = "file://", s[7:]
+        else:
+            lead, body = "file:", s[5:]
+        parts: list[str] = []
+        for p in body.split("\\"):
+            decoded = unquote(p, encoding="utf-8")
+            nfc = unicodedata.normalize("NFC", decoded)
+            if nfc.isascii():
+                parts.append(nfc)
+            else:
+                parts.append(quote(nfc, safe=" .-_()[]$@&,+=#"))
+        out = lead + "\\".join(parts)
+        return out.encode("utf-8") if out != s else val
+
+    nfc = unicodedata.normalize("NFC", s)
+    if nfc == s:
+        return val
+    return nfc.encode("utf-8")
+
+
 def _apply_replacements(
     val: bytes, replacements: list[tuple[bytes, bytes]], sep_style: str | None
 ) -> bytes:
@@ -217,6 +270,7 @@ def _apply_replacements(
             out = out.replace(old, new)
     if sep_style:
         out = fix_abs_separators(out, sep_style)
+    out = normalize_path_unicode(out)
     return out
 
 
@@ -247,7 +301,7 @@ def replace_in_tree(
                         if old:
                             count += val.count(old)
                     if not any(old in val for old, _ in replacements) and new_val != val:
-                        count += 1  # separator-only fix
+                        count += 1  # separator / unicode fix
                     node["_new_val"] = new_val
                     d = len(new_val) - len(val)
                     node["length"] = len(new_val)

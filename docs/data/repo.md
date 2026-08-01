@@ -92,6 +92,12 @@ git push
 
 문자열만 바꾸면 protobuf 길이 필드가 깨져 재생목록이 사라짐 → 반드시 이 스크립트 사용.
 
+**pull/smudge 전 ProPresenter 완전 종료.** PP가 켜진 채 `LibraryData`를 바꾸면 라이브러리 `.pro`가 대량 삭제될 수 있다.
+
+**`.pro` RTF (Win · Mac):** Windows PP는 보통 `rtf0` + `\uXXXX` 유니코드, Mac PP는 `cocoartf` + `ansicpg949` 로 저장한다. Mac에서 다시 저장한 곡을 Windows에서 열면 한글이 비거나 깨질 수 있음 → 해당 곡은 Windows에서 한 번 열어 저장하거나, 직전 Windows 커밋 내용으로 되돌린다.
+
+**경로 유니코드 (NFC):** Mac PP는 재생목록/`LibraryData` 경로를 NFD(자모 분해, `file:` URL percent-encoding 포함)로 넣는다. Windows 디스크·Git 트리는 NFC라 NFD 문자열은 파일을 못 찾는다 → `pp_path_normalize` smudge/clean이 **NFC로 정규화**한다.
+
 **라이브러리 UI 중복:** macOS는 PP가 `~/Library/Application Support/.../UserWorkspaces/<show>/Libraries/LibraryData` 에 별도 인덱스를 둔다. 여기에 같은 `.pro`가 2번 등록되면 라이브러리/찬양 목록이 2배로 보인다. **PP 완전 종료 후** 정리.
 
 ## 곡 정본 (Libraries)
