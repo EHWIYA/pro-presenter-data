@@ -3,19 +3,22 @@
 
 Git filter:
   clean  — working tree absolute → Git portable (%USERPROFILE%\\Documents\\pro-presenter)
-  smudge — Git portable (or other-PC absolute) → this PC absolute
+  smudge — **no-op** on checkout/pull (working tree stays portable until PP)
+
+Explicit expand (PP 열기 직전 1회):
+  smudge-files — Git portable → this PC absolute
 
 Also NFC-normalizes Hangul in path strings (Mac NFD / percent-encoded file: URLs
 break Windows because the show-dir files are NFC).
 
 CLI:
-  clean | smudge          stdin → stdout (git filter)
+  clean | smudge          stdin → stdout (git filter; smudge=identity)
   clean-files | smudge-files   rewrite on-disk targets in-place
   status                  print path-style counts for targets
 
 Win · Mac:
-  Git 정본은 Windows portable(백슬래시) + NFC 한글 경로.
-  Mac working tree는 /Users/… (슬래시).
+  Git 정본·checkout 직후 working tree = portable(백슬래시) + NFC.
+  PP 사용 직전 smudge-files → 이 PC 절대경로.
   상대 경로 Libraries/… 는 항상 슬래시 유지.
 """
 from __future__ import annotations
@@ -191,6 +194,10 @@ def is_relative_library_path(val: bytes) -> bool:
     return val.startswith(b"Libraries/") or val.startswith(b"Libraries\\")
 
 
+_SHOW_MARKER_BS = "Documents\\pro-presenter"
+_FILE_QUOTE_SAFE = " .-_()[]$@&,+=#"
+
+
 def is_absolute_show_path(val: bytes) -> bool:
     if is_relative_library_path(val):
         return False
@@ -199,6 +206,8 @@ def is_absolute_show_path(val: bytes) -> bool:
     if val.startswith(b"C:\\Users\\") or val.startswith(b"C:/Users/"):
         return True
     if val.startswith(b"/Users/") and b"pro-presenter" in val:
+        return True
+    if b"%2FUsers%2F" in val and b"pro-presenter" in val:
         return True
     return b"Documents\\pro-presenter" in val or b"Documents/pro-presenter" in val
 
@@ -224,53 +233,110 @@ def is_path_like(val: bytes) -> bool:
     )
 
 
-def normalize_path_unicode(val: bytes) -> bytes:
-    """Mac PP stores Hangul paths as NFD (often percent-encoded in file: URLs).
+def _nfc(s: str) -> str:
+    return unicodedata.normalize("NFC", s)
 
-    Windows show-dir files are NFC — NFD path strings do not resolve → broken playlists.
-    Git portable form is NFC so both OSes can open the same blobs after smudge.
-    """
-    if not is_path_like(val):
+
+def _encode_path_segments(path_bs: str) -> str:
+    """Backslash path → ASCII as-is, non-ASCII percent-encoded (Git portable file: style)."""
+    parts: list[str] = []
+    for p in path_bs.split("\\"):
+        nfc = _nfc(p)
+        if nfc.isascii():
+            parts.append(nfc)
+        else:
+            parts.append(quote(nfc, safe=_FILE_QUOTE_SAFE))
+    return "\\".join(parts)
+
+
+def _decode_file_body(body: str) -> str:
+    """file: URL body → NFC path using backslash separators."""
+    # Mac PP often stores file://%2FUsers%2F… (slashes percent-encoded).
+    # Git portable uses file:\\%USERPROFILE%\… with backslashes.
+    decoded = _nfc(unquote(body, encoding="utf-8"))
+    return decoded.replace("/", "\\")
+
+
+def _split_file_url(s: str) -> tuple[str, str] | None:
+    if s.startswith("file:\\\\"):
+        return "file:\\\\", s[7:]
+    if s.startswith("file://"):
+        return "file://", s[7:]
+    if s.startswith("file:"):
+        return "file:", s[5:]
+    return None
+
+
+def _map_show_root(path_bs: str, new_root: str) -> str | None:
+    """Replace show-dir root in a backslash path. None if not under show dir."""
+    marker = _SHOW_MARKER_BS
+    idx = path_bs.find(marker)
+    if idx == -1:
+        return None
+    rest = path_bs[idx + len(marker) :]
+    return new_root.replace("/", "\\") + rest
+
+
+def rewrite_file_url(val: bytes, mode: str) -> bytes:
+    """Rewrite file: URL leaf to Git portable (clean) or this-PC runtime (smudge)."""
+    try:
+        s = val.decode("utf-8")
+    except UnicodeDecodeError:
+        return val
+    split = _split_file_url(s)
+    if split is None:
+        return val
+    _lead, body = split
+    path_bs = _decode_file_body(body)
+    if mode == "clean":
+        mapped = _map_show_root(path_bs, PORTABLE_ROOT)
+        if mapped is None:
+            return val
+        out = "file:\\\\" + _encode_path_segments(mapped)
+        return out.encode("utf-8")
+    # smudge
+    mapped = _map_show_root(path_bs, runtime_root())
+    if mapped is None:
+        return val
+    if is_windows():
+        out = "file:\\\\" + _encode_path_segments(mapped)
+    else:
+        # Mac PP: file:// + percent-encode path (including leading / as %2F)
+        posix = _nfc(mapped.replace("\\", "/"))
+        out = "file://" + quote(posix, safe=_FILE_QUOTE_SAFE)
+    return out.encode("utf-8")
+
+
+def normalize_plain_path_unicode(val: bytes) -> bytes:
+    """NFC-normalize non-file path strings."""
+    if not is_path_like(val) or val.startswith(b"file:"):
         return val
     try:
         s = val.decode("utf-8")
     except UnicodeDecodeError:
         return val
-
-    if val.startswith(b"file:") and b"%" in val:
-        if s.startswith("file:\\\\"):
-            lead, body = "file:\\\\", s[7:]
-        elif s.startswith("file://"):
-            lead, body = "file://", s[7:]
-        else:
-            lead, body = "file:", s[5:]
-        parts: list[str] = []
-        for p in body.split("\\"):
-            decoded = unquote(p, encoding="utf-8")
-            nfc = unicodedata.normalize("NFC", decoded)
-            if nfc.isascii():
-                parts.append(nfc)
-            else:
-                parts.append(quote(nfc, safe=" .-_()[]$@&,+=#"))
-        out = lead + "\\".join(parts)
-        return out.encode("utf-8") if out != s else val
-
-    nfc = unicodedata.normalize("NFC", s)
+    nfc = _nfc(s)
     if nfc == s:
         return val
     return nfc.encode("utf-8")
 
 
 def _apply_replacements(
-    val: bytes, replacements: list[tuple[bytes, bytes]], sep_style: str | None
+    val: bytes,
+    replacements: list[tuple[bytes, bytes]],
+    sep_style: str | None,
+    mode: str,
 ) -> bytes:
+    if val.startswith(b"file:"):
+        return rewrite_file_url(val, mode)
+
     out = val
     for old, new in replacements:
         if old and old in out:
             out = out.replace(old, new)
     if sep_style:
         out = fix_abs_separators(out, sep_style)
-    out = normalize_path_unicode(out)
+    out = normalize_plain_path_unicode(out)
     return out
 
 
@@ -279,6 +345,7 @@ def replace_in_tree(
     fields: list[dict],
     replacements: list[tuple[bytes, bytes]],
     sep_style: str | None,
+    mode: str,
 ) -> int:
     count = 0
 
@@ -295,13 +362,13 @@ def replace_in_tree(
                     total += d
             else:
                 val = buf[node["val_start"] : node["end"]]
-                new_val = _apply_replacements(val, replacements, sep_style)
+                new_val = _apply_replacements(val, replacements, sep_style, mode)
                 if new_val != val:
                     for old, _new in replacements:
                         if old:
                             count += val.count(old)
                     if not any(old in val for old, _ in replacements) and new_val != val:
-                        count += 1  # separator / unicode fix
+                        count += 1  # file: / separator / unicode fix
                     node["_new_val"] = new_val
                     d = len(new_val) - len(val)
                     node["length"] = len(new_val)
@@ -433,15 +500,15 @@ def transform(data: bytes, mode: str) -> bytes:
     else:
         raise ValueError(mode)
 
-    # Separator fix may still be needed even if roots already match
+    # file: URLs always go through rewrite_file_url; root reps cover plain abs paths.
     need = bool(reps and any(old in data for old, _ in reps))
-    if not need:
+    if not need and b"file:" not in data:
         # Still normalize separators on abs paths for this platform/mode
         try:
             fields = parse_fields(data, 0, len(data))
         except Exception:
             return data
-        n = replace_in_tree(data, fields, [], sep_style)
+        n = replace_in_tree(data, fields, [], sep_style, mode)
         if n == 0:
             return data
         return rebuild(data, fields)
@@ -454,7 +521,7 @@ def transform(data: bytes, mode: str) -> bytes:
             file=sys.stderr,
         )
         return data
-    n = replace_in_tree(data, fields, reps, sep_style)
+    n = replace_in_tree(data, fields, reps, sep_style, mode)
     if n == 0:
         return data
     return rebuild(data, fields)
@@ -462,6 +529,11 @@ def transform(data: bytes, mode: str) -> bytes:
 
 def filter_stdio(mode: str) -> None:
     data = sys.stdin.buffer.read()
+    if mode == "smudge":
+        # Identity: checkout/pull must not rewrite working tree.
+        # Expand paths only via `smudge-files` immediately before opening PP.
+        sys.stdout.buffer.write(data)
+        return
     sys.stdout.buffer.write(transform(data, mode))
 
 

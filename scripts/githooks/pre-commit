@@ -17,7 +17,7 @@ else
   echo "ERROR: python required for pp-paths" >&2
   exit 1
 fi
-# Working tree stays runtime for PP; filter clean converts on `git add`.
+# Working tree stays portable after pull; run smudge-files before PP.
 # Re-add targets so clean filter always runs before commit.
 for f in Playlists/Library Playlists/Media Libraries/LibraryData; do
   if [ -f "$f" ] && git diff --cached --name-only | grep -qx "$f"; then

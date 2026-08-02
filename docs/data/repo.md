@@ -56,7 +56,8 @@ Documents/pro-presenter/
 | 시점 | 동작 |
 |------|------|
 | **신규 PC 1회** | Win: `powershell -File scripts/setup-git-filters.ps1` · Mac: `./scripts/setup-git-filters.sh` |
-| PP 시작 전 | `git pull --rebase` (PP 종료) → 경로 **자동** smudge |
+| PP 시작 전 | `git pull --rebase` (PP 종료) — checkout은 portable 유지 · **Changes 없음** |
+| PP 열기 직전 | `python3 scripts/pp_path_normalize.py smudge-files` (이 PC 절대경로) |
 | 예배 후 | `git add` / `commit` / `push` → 경로 **자동** clean (Git=portable) |
 
 ```powershell
@@ -64,6 +65,7 @@ Documents/pro-presenter/
 cd "$env:USERPROFILE\Documents\pro-presenter"
 # powershell -File scripts/setup-git-filters.ps1   # 신규만 1회
 git pull --rebase
+python scripts/pp_path_normalize.py smudge-files   # PP 열기 직전
 git add Libraries/ Playlists/ Presets/ Themes/ Fonts/ Media/Assets/
 git commit -m "..."
 git push
@@ -74,6 +76,7 @@ git push
 cd "$HOME/Documents/pro-presenter"
 # chmod +x scripts/setup-git-filters.sh && ./scripts/setup-git-filters.sh   # 신규만 1회
 git pull --rebase
+python3 scripts/pp_path_normalize.py smudge-files   # PP 열기 직전
 git add Libraries/ Playlists/ Presets/ Themes/ Fonts/ Media/Assets/
 git commit -m "..."
 git push
@@ -88,11 +91,11 @@ git push
 | **Git 객체 (공통)** | `%USERPROFILE%\Documents\pro-presenter\…` | 동일 (백슬래시 portable) |
 | **working tree (PP용)** | `C:\Users\<계정>\Documents\pro-presenter\…` | `/Users/<계정>/Documents/pro-presenter/…` |
 
-`Playlists/Library` · `Playlists/Media` · `Libraries/LibraryData`는 Git **pp-paths** clean/smudge filter + `scripts/githooks`가 변환한다. Mac에서는 portable→POSIX 경로로 바꿀 때 **구분자(`/`)까지** 맞춘다. 상대 경로 `Libraries/…`는 OS 공통(슬래시).
+`Playlists/Library` · `Playlists/Media` · `Libraries/LibraryData`는 Git **pp-paths** clean filter(커밋 시) + **명시적** `smudge-files`(PP 직전)로 변환한다. checkout/pull의 smudge filter는 identity라 Discard해도 파일이 다시 안 바뀐다. 상대 경로 `Libraries/…`는 OS 공통(슬래시).
 
 문자열만 바꾸면 protobuf 길이 필드가 깨져 재생목록이 사라짐 → 반드시 이 스크립트 사용.
 
-**pull/smudge 전 ProPresenter 완전 종료.** PP가 켜진 채 `LibraryData`를 바꾸면 라이브러리 `.pro`가 대량 삭제될 수 있다.
+**smudge-files / pull 전 ProPresenter 완전 종료.** PP가 켜진 채 `LibraryData`를 바꾸면 라이브러리 `.pro`가 대량 삭제될 수 있다.
 
 **`.pro` RTF (Win · Mac):** Windows PP는 보통 `rtf0` + `\uXXXX` 유니코드, Mac PP는 `cocoartf` + `ansicpg949` 로 저장한다. Mac에서 다시 저장한 곡을 Windows에서 열면 한글이 비거나 깨질 수 있음 → 해당 곡은 Windows에서 한 번 열어 저장하거나, 직전 Windows 커밋 내용으로 되돌린다.
 

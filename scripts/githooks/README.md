@@ -4,7 +4,15 @@
 
 | hook | 역할 |
 |------|------|
-| `post-merge` / `post-checkout` / `post-rewrite` | pull·checkout 후 경로 smudge (이 PC 절대경로) |
-| `pre-commit` | `filter.pp-paths` 설정 여부 확인 |
+| `post-merge` / `post-checkout` / `post-rewrite` | **no-op** — checkout/pull이 working tree 경로를 바꾸지 않음 |
+| `pre-commit` | `filter.pp-paths` 설정 여부 확인 · staged 인덱스 clean |
 
-정본 변환은 Git **clean/smudge filter** (`pp-paths`)가 담당한다. Mac는 executable bit 필요 → setup.sh가 `chmod +x` 한다.
+경로 변환:
+
+| 시점 | 동작 |
+|------|------|
+| `git add` / commit | **clean** filter → Git portable |
+| PP 열기 직전 | `python3 scripts/pp_path_normalize.py smudge-files` (명시) |
+| checkout/pull | smudge filter = identity (파일 그대로) |
+
+Mac는 executable bit 필요 → setup.sh가 `chmod +x` 한다.

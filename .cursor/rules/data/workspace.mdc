@@ -26,7 +26,8 @@ alwaysApply: true
 | 시점 | 동작 |
 |------|------|
 | 신규 PC 1회 | Win: `scripts/setup-git-filters.ps1` · Mac: `scripts/setup-git-filters.sh` |
-| 시작 전 | `git pull` (PP 종료) — 경로 smudge 자동 |
+| 시작 전 | `git pull` (PP 종료) — portable 유지 |
+| PP 직전 | `python3 scripts/pp_path_normalize.py smudge-files` |
 | 예배 후 | 이 repo commit/push — 경로 clean 자동 |
 
 상세: `docs/data/repo.md`
