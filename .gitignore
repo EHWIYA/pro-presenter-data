@@ -1,11 +1,14 @@
 # PC별 설정
 Configuration/
 
-# PP 런타임·캐시 (Git 제외) — 정본은 Media/Assets/ 만
+# PP 런타임·캐시 (Git 제외)
 Media/Downloads/
 Media/Import/
 Media/Imported/
 Media/ProContent/
+
+# 미디어 정본 — Nextcloud 관리 (Git LFS 대역폭 한도 초과로 이관, docs/data/repo.md 참고)
+Media/Assets/
 
 # OS
 .DS_Store

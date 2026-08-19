@@ -27,7 +27,7 @@ Documents/pro-presenter/
   Playlists/        ← 재생목록 (Git) — PP UI 표시 기준
   Presets/, Themes/ ← Git
   Fonts/            ← Git LFS (정본 글꼴 바이너리)
-  Media/Assets/     ← Git LFS (정본 미디어)
+  Media/Assets/     ← Nextcloud (정본 미디어, Git 제외 — 아래 참고)
   Media/Downloads|Import|Imported|ProContent/ ← gitignore (PP 런타임)
   Configuration/    ← gitignore — PC별
 ```
@@ -40,16 +40,30 @@ Documents/pro-presenter/
 
 ## Git
 
-**포함:** `Libraries/`, `Playlists/`, `Presets/`, `Themes/`, `Fonts/`, `Media/Assets/` (Git LFS)  
-**제외:** `Media/` 런타임 하위, `Configuration/`, `.env`
+**포함:** `Libraries/`, `Playlists/`, `Presets/`, `Themes/`, `Fonts/` (Git LFS)  
+**제외:** `Media/` 전체(런타임 + `Assets/` 모두 — 아래 Nextcloud 참고), `Configuration/`, `.env`
 
 **글꼴:** PP는 OS 설치 글꼴만 참조. 바이너리 정본 = `Fonts/` + `manifest.json`. OS 설치 → [../handoff/fonts.md](../handoff/fonts.md).
 
-**LFS:** `.gitattributes` — `*.png` `*.jpg` `*.mp4` `*.ttf` `*.otf` 등. 각 PC에 [Git LFS](https://git-lfs.com/) 설치·`git lfs install` 1회.
+**LFS:** `.gitattributes` — `Fonts/*.ttf` `Fonts/*.otf` 만. 각 PC에 [Git LFS](https://git-lfs.com/) 설치·`git lfs install` 1회.
 
 - `origin` = `https://github.com/EHWIYA/pro-presenter-data`
 - init·remote add **이미 완료** — 재실행 금지
 - 작업 전 ProPresenter **완전 종료**
+
+## 미디어 (Media/Assets) — Nextcloud
+
+2026-08 기준 `Media/Assets/`(영상·음원·이미지)는 **Git에서 제외**하고 자체 NAS의 Nextcloud로 관리한다. GitHub 무료 Git LFS 한도(저장 1GB·대역폭 1GB/월)를 캠프 영상 등으로 초과해 `git pull`이 계속 막혔던 문제 때문.
+
+| 시점 | 동작 |
+|------|------|
+| **신규 PC 1회** | Nextcloud 데스크톱 클라이언트 설치 → `Media/Assets` 폴더를 동기화 대상으로 지정 |
+| 미디어 추가·수정 | 파일을 `Media/Assets/`에 넣기만 하면 Nextcloud가 다른 PC로 자동 전파 (git 명령 불필요) |
+| PP 열기 전 | Nextcloud 트레이 아이콘이 "동기화 완료" 상태인지 확인 (대용량 파일은 시간 걸릴 수 있음) |
+
+- `Media/Assets/`는 `.gitignore` 대상 — git으로 커밋/푸시/풀 하지 않는다.
+- `Libraries/*.pro`·`Playlists/*`는 지금처럼 그대로 git으로 관리 — 파일명(경로)이 두 시스템을 잇는 유일한 연결고리이므로 미디어 파일명을 git 커밋과 별개로 마음대로 바꾸지 않는다.
+- 과거(2026-08 이전) 커밋에 남아있는 Git LFS 이력은 아직 정리 전 — 별도 작업으로 예정.
 
 ## 동기화
 
@@ -66,7 +80,7 @@ cd "$env:USERPROFILE\Documents\pro-presenter"
 # powershell -File scripts/setup-git-filters.ps1   # 신규만 1회
 git pull --rebase
 python scripts/pp_path_normalize.py smudge-files   # PP 열기 직전
-git add Libraries/ Playlists/ Presets/ Themes/ Fonts/ Media/Assets/
+git add Libraries/ Playlists/ Presets/ Themes/ Fonts/
 git commit -m "..."
 git push
 ```
@@ -77,7 +91,7 @@ cd "$HOME/Documents/pro-presenter"
 # chmod +x scripts/setup-git-filters.sh && ./scripts/setup-git-filters.sh   # 신규만 1회
 git pull --rebase
 python3 scripts/pp_path_normalize.py smudge-files   # PP 열기 직전
-git add Libraries/ Playlists/ Presets/ Themes/ Fonts/ Media/Assets/
+git add Libraries/ Playlists/ Presets/ Themes/ Fonts/
 git commit -m "..."
 git push
 ```

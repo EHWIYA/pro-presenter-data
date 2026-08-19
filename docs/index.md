@@ -1,6 +1,6 @@
 # 문서 목차
 
-정본은 `docs/`. README·AGENTS·`.cursor/rules/`는 요약만.
+정본은 `docs/`. README·AGENTS는 요약만.
 
 ## system
 
@@ -25,7 +25,7 @@
 | [theme-profiles.md](handoff/theme-profiles.md) | 테마·재생목록·미디어 정본 |
 | [fonts.md](handoff/fonts.md) | 글꼴 OS 설치 |
 
-## Cursor 첫 메시지 (한 줄)
+## 에이전트 첫 메시지 (한 줄)
 
 - **front-end:** PWA · pro-api만
 - **back-end:** NAS BFF · .pro 생성 안 함

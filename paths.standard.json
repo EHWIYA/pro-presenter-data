@@ -11,7 +11,8 @@
   },
   "content_model": {
     "_doc": "PP UI는 재생목록(Playlists) 기준. 재생목록 항목은 Libraries/*.pro 참조.",
-    "primary_git_paths": ["Libraries/", "Playlists/", "Presets/", "Themes/", "Fonts/", "Media/Assets/"]
+    "primary_git_paths": ["Libraries/", "Playlists/", "Presets/", "Themes/", "Fonts/"],
+    "primary_nextcloud_paths": ["Media/Assets/"]
   },
   "github": {
     "assets_repo": "EHWIYA/pro-presenter-data",
