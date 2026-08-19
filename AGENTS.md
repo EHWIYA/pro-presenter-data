@@ -21,7 +21,7 @@
 | 경로 | `%USERPROFILE%\Documents\pro-presenter` |
 | PP UI | 재생목록 → `Libraries/*.pro` |
 | 신규 PC | Win: `scripts/setup-git-filters.ps1` · Mac: `scripts/setup-git-filters.sh` |
-| 미디어(Media/Assets) | Git 아님 — Nextcloud (신규 PC 1회: 클라이언트 설치 + 폴더 지정) |
+| 미디어(Media/Assets) | Git 아님 — Nextcloud, `scripts/nextcloud-sync.bat`/`.sh`(rclone bisync)로 동기화 |
 
 ## 워크스페이스 경계
 

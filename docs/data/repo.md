@@ -55,11 +55,14 @@ Documents/pro-presenter/
 
 2026-08 기준 `Media/Assets/`(영상·음원·이미지)는 **Git에서 제외**하고 자체 NAS의 Nextcloud로 관리한다. GitHub 무료 Git LFS 한도(저장 1GB·대역폭 1GB/월)를 캠프 영상 등으로 초과해 `git pull`이 계속 막혔던 문제 때문.
 
+GUI 클라이언트 대신 **rclone bisync**로 CLI 자동 동기화한다 (`scripts/nextcloud-sync.bat`/`.sh`).
+
 | 시점 | 동작 |
 |------|------|
-| **신규 PC 1회** | Nextcloud 데스크톱 클라이언트 설치 → `Media/Assets` 폴더를 동기화 대상으로 지정 |
-| 미디어 추가·수정 | 파일을 `Media/Assets/`에 넣기만 하면 Nextcloud가 다른 PC로 자동 전파 (git 명령 불필요) |
-| PP 열기 전 | Nextcloud 트레이 아이콘이 "동기화 완료" 상태인지 확인 (대용량 파일은 시간 걸릴 수 있음) |
+| **신규 PC 1회** | rclone 설치 → `rclone config`로 원격 `pp-nextcloud` 등록 (WebDAV, 앱 비밀번호 사용) → Win: `powershell -File scripts/setup-nextcloud-sync-task.ps1` (로그온 시 1회 자동 실행 등록) · Mac: `cp scripts/kr.iwhya.pp.nextcloudsync.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/kr.iwhya.pp.nextcloudsync.plist` |
+| PC 켤 때 | `nextcloud-sync.bat`/`.sh`가 자동 1회 실행 → `Media/Assets` ↔ NAS `04_교회자료/PP_Media_Assets` 양방향 동기화 |
+| 미디어 추가·수정 후 즉시 반영하고 싶을 때 | 수동으로 `scripts/nextcloud-sync.bat`(또는 `.sh`) 재실행 |
+| 문제 확인 | 로그: `.nextcloud-sync/sync.log` (git 제외) |
 
 - `Media/Assets/`는 `.gitignore` 대상 — git으로 커밋/푸시/풀 하지 않는다.
 - `Libraries/*.pro`·`Playlists/*`는 지금처럼 그대로 git으로 관리 — 파일명(경로)이 두 시스템을 잇는 유일한 연결고리이므로 미디어 파일명을 git 커밋과 별개로 마음대로 바꾸지 않는다.

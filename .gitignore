@@ -9,6 +9,7 @@ Media/ProContent/
 
 # 미디어 정본 — Nextcloud 관리 (Git LFS 대역폭 한도 초과로 이관, docs/data/repo.md 참고)
 Media/Assets/
+.nextcloud-sync/
 
 # OS
 .DS_Store

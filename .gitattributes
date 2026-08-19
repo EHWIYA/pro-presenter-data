@@ -10,3 +10,6 @@ Fonts/*.otf filter=lfs diff=lfs merge=lfs -text
 Playlists/Library filter=pp-paths
 Playlists/Media filter=pp-paths
 Libraries/LibraryData filter=pp-paths
+
+# Mac 셸 스크립트 — Windows 체크아웃 시 CRLF로 바뀌면 실행 안 됨
+*.sh text eol=lf
