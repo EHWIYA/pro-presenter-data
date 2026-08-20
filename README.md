@@ -7,37 +7,51 @@ ProPresenter **Show Directory** Git 정본.
 | GitHub | [EHWIYA/pro-presenter-data](https://github.com/EHWIYA/pro-presenter-data) |
 | 로컬 | `%USERPROFILE%\Documents\pro-presenter` |
 
-## 📹 영상·사진·음악 자동 동기화 설정하기 (새 컴퓨터에서 딱 1번만)
+## 새 Windows PC에서 처음 한 번만 설정
 
-이 폴더 안 `Media\Assets` 에 넣는 영상·사진·음악 파일들은, 아래 설정을 한 번만 해두면 **컴퓨터를 켤 때마다 자동으로** 우리 교회 NAS(Nextcloud)와 서로 최신 상태로 맞춰집니다. 한 컴퓨터에서 파일을 추가하면 다른 컴퓨터에도 자동으로 나타나요. 이후로는 신경 쓸 필요 없이 그냥 컴퓨터를 켜두기만 하면 됩니다.
+설정을 마치면 다음 작업이 자동으로 실행됩니다.
+
+- PC 로그인 시 GitHub 최신 자료와 Nextcloud 미디어를 받습니다.
+- 작업 결과가 PowerShell에 표시되고 Enter를 눌러야 창이 닫힙니다.
+- ProPresenter를 종료하면 변경 자료를 자동 커밋·push합니다.
+- 자동 커밋 메시지는 `예배 세션 자동 동기화 2026-08-20 14:30` 형식입니다.
+- 마지막으로 Nextcloud 미디어를 동기화하고 Enter 입력을 기다립니다.
+
+설정과 동기화 중에는 ProPresenter를 완전히 종료하세요.
+
+### 1단계. Git과 rclone 설치
+
+PowerShell에서 다음 명령을 각각 실행합니다.
+
+```powershell
+winget install Git.Git
+winget install GitHub.GitLFS
+winget install rclone.rclone
+```
+
+### 2단계. 저장소 준비
+
+처음 설치하는 PC라면 다음 위치에 저장소를 받습니다. 이미 폴더가 있다면 clone하지 않습니다.
+
+```powershell
+git clone https://github.com/EHWIYA/pro-presenter-data.git "$env:USERPROFILE\Documents\pro-presenter"
+cd "$env:USERPROFILE\Documents\pro-presenter"
+git lfs install
+powershell -ExecutionPolicy Bypass -File scripts/setup-git-filters.ps1
+```
+
+### 3단계. Nextcloud 연결
+
+`Media\Assets`의 영상·사진·음악은 Git이 아니라 교회 Nextcloud와 동기화됩니다.
 
 아래 명령어들은 **뜻을 몰라도 됩니다.** 그대로 복사해서 붙여넣기만 하면 됩니다.
 
-### 1단계. 동기화 프로그램(rclone) 설치
+1. 브라우저에서 https://next-cloud.iwhya.kr/settings/user/security 에 로그인합니다.
+2. `새 앱 비밀번호 생성`에 `pro-presenter-sync`를 입력하고 생성합니다.
+3. 생성된 앱 비밀번호를 복사합니다.
+4. PowerShell에서 `rclone config`를 실행하고 아래 값을 사용합니다.
 
-**Windows** — PowerShell을 열고:
-```powershell
-winget install rclone.rclone
-```
-> 만약 오류가 나면: https://rclone.org/downloads/ 에서 Windows용을 받아 압축을 풀고, 그 안의 `rclone.exe`를 아무 폴더(예: `C:\Users\내이름\bin`)에 넣은 뒤, 그 폴더를 [환경 변수 PATH에 추가](https://www.google.com/search?q=windows+환경변수+path+추가하는+법)해주세요.
-
-**Mac** — 터미널(Terminal)을 열고:
-```bash
-brew install rclone
-```
-> Homebrew가 없다면 먼저 https://brew.sh 안내대로 설치해주세요.
-
-### 2단계. Nextcloud 앱 비밀번호 발급받기
-
-1. 브라우저에서 https://next-cloud.iwhya.kr/settings/user/security 접속 → 로그인
-2. 페이지 위쪽 "새 앱 비밀번호 생성" 칸에 아무 이름(예: `pro-presenter-sync`)을 입력하고 생성 버튼 클릭
-3. 화면에 나오는 비밀번호를 복사해두세요 (이 화면을 벗어나면 다시 안 보이니, 아직 창을 닫지 마세요)
-
-### 3단계. 위 프로그램에 계정 등록하기
-
-터미널(Windows는 PowerShell, Mac은 터미널)에 `rclone config`라고 입력하고 Enter, 그 다음 아래 순서대로 입력해주세요. (`password>`에서는 2단계에서 복사한 비밀번호를 붙여넣으세요.)
-
-```
+```text
 n
 name> pp-media
 Storage> webdav
@@ -52,26 +66,32 @@ y
 q
 ```
 
-제대로 됐는지 확인: `rclone size pp-media:` 입력했을 때 파일 개수·용량이 나오면 성공입니다.
+다음 명령에서 파일 개수와 용량이 나오면 성공입니다.
 
-### 4단계. 컴퓨터 켤 때 자동 실행되도록 등록
-
-**Windows** — PowerShell에서:
 ```powershell
-powershell -File "%USERPROFILE%\Documents\pro-presenter\scripts\setup-nextcloud-sync-task.ps1"
-```
-> "액세스가 거부되었습니다" 오류가 나면, 아래 명령어로 대신 등록해주세요.
-> ```powershell
-> schtasks /create /tn "PP-NextcloudSync" /tr "\"%USERPROFILE%\Documents\pro-presenter\scripts\nextcloud-sync.bat\"" /sc onlogon /rl limited /f
-> ```
-
-**Mac** — 터미널에서:
-```bash
-cp scripts/kr.iwhya.pp.nextcloudsync.plist ~/Library/LaunchAgents/
-launchctl load ~/Library/LaunchAgents/kr.iwhya.pp.nextcloudsync.plist
+rclone size pp-media:
 ```
 
-여기까지 하면 끝입니다. 다음에 컴퓨터를 켤 때부터 자동으로 동기화됩니다. 지금 바로 한번 실행해보고 싶다면 `scripts\nextcloud-sync.bat`(Mac은 `scripts/nextcloud-sync.sh`)를 더블클릭하거나 실행하면 됩니다.
+### 4단계. 자동화 등록
+
+```powershell
+cd "$env:USERPROFILE\Documents\pro-presenter"
+powershell -ExecutionPolicy Bypass -File scripts/setup-auto-sync-windows.ps1
+```
+
+`설정 완료`가 나오면 끝입니다. 다음 로그인부터 자동으로 동작합니다.
+
+## 평소 사용법
+
+1. 로그인 동기화 창에서 `모든 동기화가 완료되었습니다`를 확인합니다.
+2. Enter를 눌러 창을 닫고 ProPresenter를 사용합니다.
+3. 작업이 끝나면 ProPresenter를 완전히 종료합니다.
+4. 자동으로 열린 동기화 창에서 완료를 확인합니다.
+5. Enter를 누른 뒤 PC를 종료합니다.
+
+동기화 창에 빨간 오류가 나오면 창을 닫지 말고 담당자에게 화면을 전달하세요. 변경이 없으면 자동 커밋은 생성되지 않습니다. 정전과 강제 종료는 보호할 수 없습니다.
+
+Mac은 현재 Nextcloud 동기화만 지원하며 전체 자동화는 Windows 안정화 후 적용합니다. 상세 설계는 [자동 세션 동기화 문서](docs/handoff/auto-session-sync.md)를 참고하세요.
 
 ---
 
@@ -83,10 +103,7 @@ launchctl load ~/Library/LaunchAgents/kr.iwhya.pp.nextcloudsync.plist
 cd "$env:USERPROFILE\Documents\pro-presenter"
 # 신규 PC 1회: powershell -File scripts/setup-git-filters.ps1
 # macOS:       ./scripts/setup-git-filters.sh
-git pull
-# PP 종료 후
-git add Libraries/ Playlists/ Presets/ Themes/
-git commit -m "..." ; git push
+git pull --rebase
 ```
 
 `Media/Assets/`(영상·음원·이미지)는 git이 아닌 Nextcloud로 동기화한다. 상세: [docs/data/repo.md](docs/data/repo.md)
