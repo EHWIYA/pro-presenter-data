@@ -1,5 +1,18 @@
 ﻿# Windows 로그인 및 ProPresenter 종료 자동 동기화 작업을 등록한다.
 $ErrorActionPreference = "Stop"
+
+$CurrentIdentity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+$IsAdministrator = ([System.Security.Principal.WindowsPrincipal]::new($CurrentIdentity)).IsInRole(
+    [System.Security.Principal.WindowsBuiltInRole]::Administrator
+)
+
+if (-not $IsAdministrator) {
+    $Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    Start-Process -FilePath "powershell.exe" -Verb RunAs -ArgumentList $Arguments
+    Write-Host "Windows 권한 확인 창에서 '예'를 누르세요."
+    exit 0
+}
+
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $SyncScript = Join-Path $PSScriptRoot "windows-auto-sync.ps1"
 $WatcherScript = Join-Path $PSScriptRoot "windows-propresenter-watcher.ps1"

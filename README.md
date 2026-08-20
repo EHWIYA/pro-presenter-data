@@ -79,7 +79,7 @@ cd "$env:USERPROFILE\Documents\pro-presenter"
 powershell -ExecutionPolicy Bypass -File scripts/setup-auto-sync-windows.ps1
 ```
 
-`설정 완료`가 나오면 끝입니다. 다음 로그인부터 자동으로 동작합니다.
+Windows 권한 확인 창이 나오면 `예`를 누릅니다. `설정 완료`가 나오면 끝이며 다음 로그인부터 자동으로 동작합니다.
 
 ## 평소 사용법
 
