@@ -40,6 +40,8 @@ git lfs install
 powershell -ExecutionPolicy Bypass -File scripts/setup-git-filters.ps1
 ```
 
+> 2026-08-20 이전부터 사용하던 PC는 Git 이력이 변경되어 일반 `git pull`을 하면 안 됩니다. ProPresenter를 종료하고 미반영 작업이 없는지 담당자에게 확인받은 뒤 `git fetch origin`과 `git reset --hard origin/main`을 실행하세요.
+
 ### 3단계. Nextcloud 연결
 
 `Media\Assets`의 영상·사진·음악은 Git이 아니라 교회 Nextcloud와 동기화됩니다.

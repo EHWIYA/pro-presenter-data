@@ -59,14 +59,14 @@ GUI 클라이언트 대신 **rclone bisync**로 CLI 자동 동기화한다 (`scr
 
 | 시점 | 동작 |
 |------|------|
-| **신규 PC 1회** | rclone 설치 → `rclone config`로 원격 `pp-nextcloud` 등록 (WebDAV, 앱 비밀번호 사용) → Win: `powershell -File scripts/setup-nextcloud-sync-task.ps1` (로그온 시 1회 자동 실행 등록) · Mac: `cp scripts/kr.iwhya.pp.nextcloudsync.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/kr.iwhya.pp.nextcloudsync.plist` |
+| **신규 PC 1회** | rclone 설치 → `rclone config`로 원격 `pp-media` 등록 (WebDAV, 앱 비밀번호 사용) → Win: `powershell -ExecutionPolicy Bypass -File scripts/setup-auto-sync-windows.ps1` · Mac: `cp scripts/kr.iwhya.pp.nextcloudsync.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/kr.iwhya.pp.nextcloudsync.plist` |
 | PC 켤 때 | `nextcloud-sync.bat`/`.sh`가 자동 1회 실행 → `Media/Assets` ↔ NAS `04_교회자료/PP_Media_Assets` 양방향 동기화 |
 | 미디어 추가·수정 후 즉시 반영하고 싶을 때 | 수동으로 `scripts/nextcloud-sync.bat`(또는 `.sh`) 재실행 |
 | 문제 확인 | 로그: `.nextcloud-sync/sync.log` (git 제외) |
 
 - `Media/Assets/`는 `.gitignore` 대상 — git으로 커밋/푸시/풀 하지 않는다.
 - `Libraries/*.pro`·`Playlists/*`는 지금처럼 그대로 git으로 관리 — 파일명(경로)이 두 시스템을 잇는 유일한 연결고리이므로 미디어 파일명을 git 커밋과 별개로 마음대로 바꾸지 않는다.
-- 과거(2026-08 이전) 커밋에 남아있는 Git LFS 이력은 아직 정리 전 — 별도 작업으로 예정.
+- 과거 `Media/Assets` Git LFS 이력은 2026-08-20 전체 원격 브랜치에서 제거했다. GitHub 서버의 orphaned LFS 객체 삭제 요청은 Support 티켓 `#4682683`으로 진행 중이다.
 
 ## 동기화
 

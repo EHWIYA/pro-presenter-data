@@ -16,7 +16,7 @@
 4. **NAS에 이미 설치돼 있던 Nextcloud 발견·활용** — 새로 설치한 게 아니라 기존 인스턴스(`https://next-cloud.iwhya.kr`, 계정 `LEEHWI`)를 그대로 씀. `04_교회자료/PP_Media_Assets` 폴더 신규 생성, 로컬 미디어 6.8GB(159개 파일) 업로드 완료 (바이트 단위까지 대조 검증함).
 5. **rclone bisync 기반 CLI 자동 동기화 구축** (GUI 클라이언트 대신):
    - `scripts/nextcloud-sync.bat`(Win) / `.sh`(Mac) — 실제 동기화 실행
-   - `scripts/setup-nextcloud-sync-task.ps1` — Windows 작업 스케줄러 등록(로그온 시 1회)
+   - `scripts/setup-auto-sync-windows.ps1` — Windows 로그인·ProPresenter 종료 통합 자동화 등록
    - `scripts/kr.iwhya.pp.nextcloudsync.plist` — Mac launchd 등록용
    - **이 PC(Windows)에서 전 과정 실제 실행·검증 완료** — 로컬↔NAS 양방향 테스트 파일로 업/다운로드·삭제 반영까지 확인함.
 6. **비전공자용 설정 가이드를 `README.md` 최상단에 추가** — 다른 PC(HWIYA-DESK, Mac)에서 그대로 따라 하면 됨.
@@ -24,7 +24,7 @@
 ## 다음 대화에서 할 일 (아직 안 한 것)
 
 - [ ] **다른 PC(`HWIYA-DESK`, Mac)에 Nextcloud 동기화 설정** — `README.md`의 "📹 영상·사진·음악 자동 동기화 설정하기" 섹션 그대로 따라가면 됨. 이 PC에서 실증된 절차라 안심 가능.
-- [ ] **과거 Git LFS 이력(약 7.7GB) 정리 여부/시기 결정** — 지금은 미룬 상태. 하게 되면 history rewrite(force-push) 필요 → 다른 PC들은 그때 `git fetch && git reset --hard origin/main`으로 맞춰야 함(병합 시도 금지, `Playlists/Library`류 깨질 위험 있었음).
+- [x] **과거 Git LFS 이력 정리** — 2026-08-20 전체 원격 브랜치에서 `Media/Assets` 이력을 제거하고 force-push 완료. GitHub 서버 orphaned 객체 삭제는 Support 티켓 `#4682683`으로 요청.
 - [ ] 남은 git stash 2개(`sync-fix-backup`, `라이브러리 재구축 전 백업`) — 내용 diff 대조로 origin/main과 완전 중복임을 확인했음, 안전하게 지워도 됨(아직 안 지움, 만약을 위해 보존 중).
 
 ## 재사용할 핵심 정보
@@ -36,7 +36,7 @@
 | **로그인 시 주의** | 반드시 이메일 `dlgnl117@gmail.com`로 로그인해야 함. `LEEHWI`로 로그인하면 앱 비밀번호 토큰의 로그인 이름과 안 맞아 rclone 401 남 (`App token login name does not match` — 이번에 겪은 실제 버그) |
 | PP 미디어 폴더 | Nextcloud `04_교회자료/PP_Media_Assets` |
 | rclone remote 이름 | `pp-media` (url에 폴더 경로까지 통째로 넣어둠 — 아래 주의사항 참고) |
-| Windows 작업 스케줄러 | `PP-NextcloudSync` (이 PC에 등록 완료, 로그온 트리거) |
+| Windows 작업 스케줄러 | `PP-StartupSync`, `PP-SessionWatcher` (이 PC 적용 완료) |
 
 **주의(교훈)**: Windows `.bat` 파일 안에 한글을 직접 쓰면 `chcp 65001`을 앞에 둬도 cmd.exe가 파싱 도중 깨지는 경우가 있었음(실제 발생·재현함). 그래서 `.bat`/`.sh`는 순수 ASCII만 쓰고, 한글이 들어가는 NAS 폴더 경로는 rclone remote 설정(`rclone.conf`의 `pp-media` url, `%EA%B5%90%ED%9A%8C...` 식 percent-encoding)에 미리 박아뒀음. 새 원격 만들 때도 이 방식 유지할 것.
 
