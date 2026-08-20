@@ -24,6 +24,7 @@
 |------|------|
 | [theme-profiles.md](handoff/theme-profiles.md) | 테마·재생목록·미디어 정본 |
 | [fonts.md](handoff/fonts.md) | 글꼴 OS 설치 |
+| [nextcloud-media-sync.md](handoff/nextcloud-media-sync.md) | Media/Assets Nextcloud 이관 세션 기록 · 다음 대화 이어갈 작업 |
 
 ## 에이전트 첫 메시지 (한 줄)
 
