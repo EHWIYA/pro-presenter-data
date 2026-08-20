@@ -6,17 +6,6 @@ if ! git config --get filter.pp-paths.clean >/dev/null; then
   echo "Run once:  powershell -File scripts/setup-git-filters.ps1" >&2
   exit 1
 fi
-# Ensure staged playlist/index blobs are portable even if filter was bypassed.
-if command -v python >/dev/null 2>&1; then
-  PY=python
-elif command -v python3 >/dev/null 2>&1; then
-  PY=python3
-elif command -v py >/dev/null 2>&1; then
-  PY="py -3"
-else
-  echo "ERROR: python required for pp-paths" >&2
-  exit 1
-fi
 # Working tree stays portable after pull; run smudge-files before PP.
 # Re-add targets so clean filter always runs before commit.
 for f in Playlists/Library Playlists/Media Libraries/LibraryData; do

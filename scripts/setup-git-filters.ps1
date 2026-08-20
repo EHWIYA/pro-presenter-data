@@ -5,45 +5,74 @@
 #   powershell -File scripts/setup-git-filters.ps1
 
 $ErrorActionPreference = "Stop"
+$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
 
 $PyExe = $null
-$PyPrefix = @()
-if (Get-Command python -ErrorAction SilentlyContinue) {
-    $PyExe = "python"
-} elseif (Get-Command python3 -ErrorAction SilentlyContinue) {
-    $PyExe = "python3"
-} elseif (Get-Command py -ErrorAction SilentlyContinue) {
-    $PyExe = "py"
-    $PyPrefix = @("-3")
-} else {
+$PythonCandidates = @()
+
+foreach ($Name in @("python", "python3")) {
+    $Command = Get-Command $Name -ErrorAction SilentlyContinue
+    if ($Command -and $Command.Source -notmatch "\\WindowsApps\\") {
+        $PythonCandidates += $Command.Source
+    }
+}
+
+foreach ($Base in @(
+    (Join-Path $env:LOCALAPPDATA "Programs\Python"),
+    $env:ProgramFiles
+)) {
+    if (Test-Path -LiteralPath $Base) {
+        $PythonCandidates += Get-ChildItem -LiteralPath $Base -Filter python.exe `
+            -Recurse -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch "\\WindowsApps\\" } |
+            Select-Object -ExpandProperty FullName
+    }
+}
+
+$PythonCandidates = $PythonCandidates | Sort-Object -Unique -Descending
+
+foreach ($Candidate in $PythonCandidates) {
+    try {
+        & $Candidate -c "import sys; raise SystemExit(sys.version_info < (3, 8))"
+        if ($LASTEXITCODE -eq 0) {
+            $PyExe = $Candidate
+            break
+        }
+    } catch {
+        continue
+    }
+}
+
+if (-not $PyExe) {
     throw "Python not found. Install Python 3 and re-run."
 }
 
-$FilterCmd = if ($PyPrefix.Count) {
-    "py -3 scripts/pp_path_normalize.py"
-} else {
-    "$PyExe scripts/pp_path_normalize.py"
-}
+$Fso = New-Object -ComObject Scripting.FileSystemObject
+$FilterPython = $Fso.GetFile($PyExe).ShortPath.Replace("\", "/")
+$FilterCmd = "$FilterPython scripts/pp_path_normalize.py"
 
-Write-Host "Python: $PyExe $($PyPrefix -join ' ')"
+Write-Host "Python: $PyExe"
 Write-Host "Repo:   $Root"
 
-git config filter.pp-paths.clean "$FilterCmd clean"
+git config --replace-all filter.pp-paths.clean "$FilterCmd clean"
 # Identity smudge: checkout/pull must not rewrite paths.
-git config filter.pp-paths.smudge "$FilterCmd smudge"
+git config --replace-all filter.pp-paths.smudge "$FilterCmd smudge"
 git config filter.pp-paths.required true
 git config core.hooksPath scripts/githooks
+git config core.quotepath false
+git config i18n.commitEncoding utf-8
+git config i18n.logOutputEncoding utf-8
 
 Write-Host "Configured:"
 git config --get filter.pp-paths.clean
 git config --get filter.pp-paths.smudge
 git config --get core.hooksPath
 
-& $PyExe @PyPrefix scripts/pp_path_normalize.py status
+& $PyExe scripts/pp_path_normalize.py status
 
 Write-Host ""
-Write-Host "OK — checkout/pull leave portable paths (no Changes until PP)."
-Write-Host "  add/commit         → clean (Git portable)"
-Write-Host "  before opening PP  → $PyExe scripts/pp_path_normalize.py smudge-files"
+Write-Host "OK - checkout/pull leave portable paths (no Changes until PP)."
+Write-Host "  add/commit         -> clean (Git portable)"
+Write-Host "  before opening PP  -> $PyExe scripts/pp_path_normalize.py smudge-files"
