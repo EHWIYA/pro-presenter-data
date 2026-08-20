@@ -6,6 +6,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $StateDir = Join-Path $RepoRoot ".nextcloud-sync"
 $LogDir = Join-Path $StateDir "auto-sync-logs"
@@ -16,24 +17,43 @@ $Success = $true
 $Errors = New-Object System.Collections.Generic.List[string]
 $Mutex = [System.Threading.Mutex]::new($false, "Local\ProPresenterAutoSync")
 $HasMutex = $false
+$StepNumber = 0
+$StepTotal = 6
+$GitResult = "확인 전"
+$NextcloudResult = "확인 전"
+$LogPath = Join-Path $LogDir "$LogStamp-$($Mode.ToLower()).log"
 
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
-Start-Transcript -Path (Join-Path $LogDir "$LogStamp-$($Mode.ToLower()).log") | Out-Null
+Start-Transcript -Path $LogPath | Out-Null
+
+$Host.UI.RawUI.WindowTitle = "ProPresenter 자동 동기화 - $ModeLabel"
+
+function Write-Banner {
+    Write-Host ""
+    Write-Host "============================================================" -ForegroundColor DarkCyan
+    Write-Host "              ProPresenter 자동 동기화" -ForegroundColor Cyan
+    Write-Host "============================================================" -ForegroundColor DarkCyan
+    Write-Host "  실행 이유  $ModeLabel"
+    Write-Host "  시작 시각  $Timestamp"
+    Write-Host "  저장 위치  $RepoRoot"
+    Write-Host "------------------------------------------------------------" -ForegroundColor DarkGray
+}
 
 function Invoke-Checked {
     param([string]$Name, [scriptblock]$Command)
 
+    $script:StepNumber++
     Write-Host ""
-    Write-Host "[$Name]" -ForegroundColor Cyan
+    Write-Host "[$StepNumber/$StepTotal] $Name" -ForegroundColor Yellow
     & $Command
     if ($LASTEXITCODE -ne 0) {
         throw "$Name failed with exit code $LASTEXITCODE"
     }
+    Write-Host "      [완료] $Name" -ForegroundColor Green
 }
 
 try {
-    Write-Host "ProPresenter 자동 동기화 - $ModeLabel" -ForegroundColor Green
-    Write-Host "시작 시각 $Timestamp"
+    Write-Banner
 
     $HasMutex = $Mutex.WaitOne([TimeSpan]::FromMinutes(30))
     if (-not $HasMutex) {
@@ -61,7 +81,7 @@ try {
             git commit -m $CommitMessage
         }
     } elseif ($LASTEXITCODE -eq 0) {
-        Write-Host "커밋할 ProPresenter 변경 사항이 없습니다."
+        Write-Host "      [건너뜀] 커밋할 ProPresenter 변경 사항이 없습니다." -ForegroundColor DarkGray
     } else {
         throw "Git 변경 사항 확인에 실패했습니다."
     }
@@ -76,8 +96,10 @@ try {
         Invoke-Checked "GitHub에 올리기" {
             git push
         }
+        $GitResult = "정상 완료"
     } catch {
         $Success = $false
+        $GitResult = "실패"
         $Errors.Add($_.Exception.Message)
         Write-Host $_.Exception.Message -ForegroundColor Red
     }
@@ -86,8 +108,14 @@ try {
         Invoke-Checked "Nextcloud 미디어 동기화" {
             & (Join-Path $PSScriptRoot "nextcloud-sync.bat")
         }
+        $RemoteSize = rclone size "pp-media:" --json | ConvertFrom-Json
+        if ($LASTEXITCODE -ne 0) {
+            throw "Nextcloud 파일 현황 확인에 실패했습니다."
+        }
+        $NextcloudResult = "정상 완료 - 파일 $($RemoteSize.count)개"
     } catch {
         $Success = $false
+        $NextcloudResult = "실패"
         $Errors.Add($_.Exception.Message)
         Write-Host $_.Exception.Message -ForegroundColor Red
     }
@@ -102,16 +130,26 @@ try {
     $Mutex.Dispose()
 
     Write-Host ""
+    Write-Host "============================================================" -ForegroundColor DarkCyan
+    Write-Host "                      실행 결과" -ForegroundColor Cyan
+    Write-Host "============================================================" -ForegroundColor DarkCyan
+    Write-Host "  GitHub       $GitResult" -ForegroundColor $(if ($GitResult -eq "실패") { "Red" } else { "Green" })
+    Write-Host "  Nextcloud    $NextcloudResult" -ForegroundColor $(if ($NextcloudResult -eq "실패") { "Red" } else { "Green" })
+    Write-Host "  완료 시각    $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
+    Write-Host "  상세 로그    $LogPath"
+    Write-Host "------------------------------------------------------------" -ForegroundColor DarkGray
     if ($Success) {
-        Write-Host "모든 동기화가 완료되었습니다." -ForegroundColor Green
+        Write-Host "  모든 동기화가 안전하게 완료되었습니다." -ForegroundColor Green
     } else {
-        Write-Host "일부 작업이 실패했습니다. 이 창의 내용을 확인하세요." -ForegroundColor Red
+        Write-Host "  일부 작업이 실패했습니다. 이 창을 닫지 마세요." -ForegroundColor Red
         $Errors | ForEach-Object { Write-Host "- $_" -ForegroundColor Red }
     }
+    Write-Host "============================================================" -ForegroundColor DarkCyan
 
     Stop-Transcript | Out-Null
     if ($WaitForKey) {
-        Read-Host "Enter를 누르면 창이 닫힙니다"
+        Write-Host ""
+        Read-Host "확인했으면 Enter를 눌러 창을 닫으세요"
     }
 }
 
