@@ -52,6 +52,30 @@ function Invoke-Checked {
     Write-Host "      [완료] $Name" -ForegroundColor Green
 }
 
+function Wait-NextcloudReady {
+    param(
+        [int]$MaxAttempts = 12,
+        [int]$RetryDelaySeconds = 20
+    )
+
+    Write-Host "      [확인] Nextcloud 연결 준비 상태를 확인합니다." -ForegroundColor Cyan
+
+    for ($Attempt = 1; $Attempt -le $MaxAttempts; $Attempt++) {
+        & rclone lsd "pp-media:" *> $null
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "      [준비 완료] Nextcloud에 연결되었습니다." -ForegroundColor Green
+            return
+        }
+
+        if ($Attempt -eq $MaxAttempts) {
+            throw "Nextcloud 연결 준비 시간이 초과되었습니다. 네트워크 상태를 확인하세요."
+        }
+
+        Write-Host "      [대기] 네트워크를 준비 중입니다. 오류가 아닙니다. ${RetryDelaySeconds}초 후 다시 확인합니다. ($Attempt/$MaxAttempts)" -ForegroundColor Yellow
+        Start-Sleep -Seconds $RetryDelaySeconds
+    }
+}
+
 try {
     Write-Banner
 
@@ -107,12 +131,14 @@ try {
 
     try {
         Invoke-Checked "Nextcloud 미디어 동기화" {
+            Wait-NextcloudReady
             & (Join-Path $PSScriptRoot "nextcloud-sync.bat")
         }
-        $RemoteSize = rclone size "pp-media:" --json | ConvertFrom-Json
+        $RemoteSizeJson = & rclone size "pp-media:" --json 2>$null
         if ($LASTEXITCODE -ne 0) {
             throw "Nextcloud 파일 현황 확인에 실패했습니다."
         }
+        $RemoteSize = $RemoteSizeJson | ConvertFrom-Json
         $NextcloudResult = "정상 완료 - 파일 $($RemoteSize.count)개"
     } catch {
         $Success = $false

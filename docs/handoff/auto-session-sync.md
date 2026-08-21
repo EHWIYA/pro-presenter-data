@@ -19,7 +19,7 @@
 
 자동 커밋 대상은 `Libraries`, `Playlists`, `Presets`, `Themes`, `Fonts`로 제한한다. 변경이 없으면 빈 커밋을 만들지 않는다. Git 작업이 실패해도 Nextcloud 동기화는 별도로 시도하며 로그는 `.nextcloud-sync/auto-sync-logs`에 남긴다.
 
-로그인 직후 Tailscale·네트워크가 아직 준비되지 않아 Nextcloud가 `403` 또는 DNS 오류를 반환할 수 있다. `nextcloud-sync.bat`는 20초 간격으로 최대 12회 재시도하며, 실패한 bisync의 완료 표식을 제거해 다음 시도에서 `--resync`로 자동 복구한다.
+로그인 직후 Tailscale·네트워크가 아직 준비되지 않아 Nextcloud가 `403` 또는 DNS 오류를 반환할 수 있다. 자동 동기화는 가벼운 연결 확인을 먼저 수행하고, 준비 중에는 사용자에게 오류가 아니라는 대기 안내를 표시한다. 연결 확인과 `nextcloud-sync.bat`는 각각 20초 간격으로 최대 12회 재시도하며, 실패한 bisync의 완료 표식을 제거해 다음 시도에서 `--resync`로 자동 복구한다.
 
 ## Mac 적용 방향
 
