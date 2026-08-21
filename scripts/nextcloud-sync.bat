@@ -15,11 +15,13 @@ set "RESYNC_FLAG="
 if not exist "%MARKER%" set "RESYNC_FLAG=--resync"
 
 rclone bisync "%REMOTE_NAME%:" "%LOCAL_PATH%" %RESYNC_FLAG% --create-empty-src-dirs -v --log-file "%LOG%"
+set "SYNC_EXIT=%ERRORLEVEL%"
 
-if %ERRORLEVEL% EQU 0 (
+if %SYNC_EXIT% EQU 0 (
     echo done > "%MARKER%"
 ) else (
-    echo [nextcloud-sync] rclone bisync failed, exit code %ERRORLEVEL% - see %LOG%
+    if exist "%MARKER%" del /q "%MARKER%"
+    echo [nextcloud-sync] rclone bisync failed, exit code %SYNC_EXIT% - see %LOG%
 )
 
-endlocal
+endlocal & exit /b %SYNC_EXIT%

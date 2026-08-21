@@ -76,6 +76,7 @@ try {
 
     git diff --cached --quiet
     if ($LASTEXITCODE -eq 1) {
+        $StepTotal = 7
         $CommitMessage = "예배 세션 자동 동기화 $Timestamp"
         Invoke-Checked "자동 커밋" {
             git commit -m $CommitMessage
