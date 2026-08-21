@@ -19,6 +19,8 @@
 
 자동 커밋 대상은 `Libraries`, `Playlists`, `Presets`, `Themes`, `Fonts`로 제한한다. 변경이 없으면 빈 커밋을 만들지 않는다. Git 작업이 실패해도 Nextcloud 동기화는 별도로 시도하며 로그는 `.nextcloud-sync/auto-sync-logs`에 남긴다.
 
+로그인 직후 Tailscale·네트워크가 아직 준비되지 않아 Nextcloud가 `403` 또는 DNS 오류를 반환할 수 있다. `nextcloud-sync.bat`는 20초 간격으로 최대 12회 재시도하며, 실패한 bisync의 완료 표식을 제거해 다음 시도에서 `--resync`로 자동 복구한다.
+
 ## Mac 적용 방향
 
 Mac도 로그인 시 Terminal 실행과 ProPresenter 종료 감시를 `launchd`로 구성할 수 있다. Windows 자동화가 실제 운영에서 안정화된 뒤 동일 순서로 이식한다. 정상적인 macOS 종료를 확실히 지연하려면 셸 스크립트가 아닌 작은 메뉴 막대 앱이 필요하다.
