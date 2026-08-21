@@ -52,6 +52,26 @@ function Invoke-Checked {
     Write-Host "      [완료] $Name" -ForegroundColor Green
 }
 
+function Invoke-RcloneQuiet {
+    param([string[]]$Arguments)
+
+    $PreviousErrorActionPreference = $ErrorActionPreference
+    try {
+        # Windows PowerShell 5 turns native stderr into a terminating error when
+        # ErrorActionPreference is Stop. Capture it and judge only the exit code.
+        $ErrorActionPreference = "Continue"
+        $CommandOutput = & rclone @Arguments 2>$null
+        $CommandExitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $PreviousErrorActionPreference
+    }
+
+    [pscustomobject]@{
+        ExitCode = $CommandExitCode
+        Output = $CommandOutput
+    }
+}
+
 function Wait-NextcloudReady {
     param(
         [int]$MaxAttempts = 12,
@@ -61,8 +81,8 @@ function Wait-NextcloudReady {
     Write-Host "      [확인] Nextcloud 연결 준비 상태를 확인합니다." -ForegroundColor Cyan
 
     for ($Attempt = 1; $Attempt -le $MaxAttempts; $Attempt++) {
-        & rclone lsd "pp-media:" *> $null
-        if ($LASTEXITCODE -eq 0) {
+        $ConnectionCheck = Invoke-RcloneQuiet -Arguments @("lsd", "pp-media:")
+        if ($ConnectionCheck.ExitCode -eq 0) {
             Write-Host "      [준비 완료] Nextcloud에 연결되었습니다." -ForegroundColor Green
             return
         }
@@ -134,11 +154,11 @@ try {
             Wait-NextcloudReady
             & (Join-Path $PSScriptRoot "nextcloud-sync.bat")
         }
-        $RemoteSizeJson = & rclone size "pp-media:" --json 2>$null
-        if ($LASTEXITCODE -ne 0) {
+        $RemoteSizeCheck = Invoke-RcloneQuiet -Arguments @("size", "pp-media:", "--json")
+        if ($RemoteSizeCheck.ExitCode -ne 0) {
             throw "Nextcloud 파일 현황 확인에 실패했습니다."
         }
-        $RemoteSize = $RemoteSizeJson | ConvertFrom-Json
+        $RemoteSize = $RemoteSizeCheck.Output | ConvertFrom-Json
         $NextcloudResult = "정상 완료 - 파일 $($RemoteSize.count)개"
     } catch {
         $Success = $false
