@@ -13,9 +13,9 @@
 |---|---|
 | `scripts/windows-auto-sync.ps1` | Git commit/pull/push, 경로 적용, Nextcloud 동기화 |
 | `scripts/windows-propresenter-watcher.ps1` | `ProPresenter.exe` 종료 감시 |
-| `scripts/setup-auto-sync-windows.ps1` | 작업 스케줄러 작업 2개 등록 |
+| `scripts/setup-auto-sync-windows.ps1` | 작업 스케줄러 작업 3개 등록 |
 
-작업 스케줄러의 `PP-StartupSync`는 로그인 시 보이는 PowerShell 창을 연다. `PP-SessionWatcher`는 숨김 상태로 본체 프로세스를 감시하고 종료 후 5초 뒤 새 PowerShell 동기화 창을 연다. 상시 실행되는 `ProPresenter Helper` 프로세스는 감시 대상이 아니다.
+작업 스케줄러의 `PP-StartupSync`는 로그인 시 보이는 PowerShell 창을 연다. `PP-SessionWatcher`는 숨김 상태로 본체 프로세스를 감시하고 종료 후 5초 뒤 별도 예약 작업 `PP-SessionSync`를 실행한다. 감시기와 동기화 창의 프로세스를 분리했으므로 결과 창을 닫아도 다음 종료 감시는 계속된다. 상시 실행되는 `ProPresenter Helper` 프로세스는 감시 대상이 아니다.
 
 자동 커밋 대상은 `Libraries`, `Playlists`, `Presets`, `Themes`, `Fonts`로 제한한다. 변경이 없으면 빈 커밋을 만들지 않는다. Git 작업이 실패해도 Nextcloud 동기화는 별도로 시도하며 로그는 `.nextcloud-sync/auto-sync-logs`에 남긴다.
 

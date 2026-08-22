@@ -35,6 +35,13 @@ Register-ScheduledTask -TaskName "PP-StartupSync" `
     -Trigger $Trigger -Principal $Principal -Settings $Settings `
     -Description "로그인 시 Git과 Nextcloud를 동기화하고 결과 창을 유지" -Force | Out-Null
 
+# 종료 감시기와 동기화 창을 서로 다른 예약 작업으로 실행한다. 동기화 결과
+# 창을 닫아도 watcher가 콘솔 종료 신호를 받지 않아 다음 종료를 계속 감시한다.
+Register-ScheduledTask -TaskName "PP-SessionSync" `
+    -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument $StartupArgs.Replace("-Mode Startup", "-Mode Session") -WorkingDirectory $RepoRoot) `
+    -Principal $Principal -Settings $Settings `
+    -Description "ProPresenter 종료 후 Git과 Nextcloud 동기화를 별도 창에서 실행" -Force | Out-Null
+
 Register-ScheduledTask -TaskName "PP-SessionWatcher" `
     -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument $WatcherArgs -WorkingDirectory $RepoRoot) `
     -Trigger $Trigger -Principal $Principal -Settings $Settings `
@@ -49,3 +56,4 @@ Start-ScheduledTask -TaskName "PP-SessionWatcher"
 Write-Host "설정 완료"
 Write-Host "- PP-StartupSync      로그인 시 보이는 동기화 창"
 Write-Host "- PP-SessionWatcher   ProPresenter 종료 감시"
+Write-Host "- PP-SessionSync      종료 후 별도 동기화 창"
