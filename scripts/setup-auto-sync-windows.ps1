@@ -15,7 +15,7 @@ if (-not $IsAdministrator) {
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $SyncScript = Join-Path $PSScriptRoot "windows-auto-sync.ps1"
-$WatcherScript = Join-Path $PSScriptRoot "windows-propresenter-watcher.ps1"
+$WatcherScript = Join-Path $PSScriptRoot "windows-propresenter-watcher.vbs"
 $UserId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 $Principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive -RunLevel Limited
 $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $UserId
@@ -28,7 +28,7 @@ foreach ($Path in @($SyncScript, $WatcherScript)) {
 }
 
 $StartupArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -Mode Startup -WaitForKey"
-$WatcherArgs = "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$WatcherScript`""
+$WatcherArgs = "`"$WatcherScript`""
 
 Register-ScheduledTask -TaskName "PP-StartupSync" `
     -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument $StartupArgs -WorkingDirectory $RepoRoot) `
@@ -43,7 +43,7 @@ Register-ScheduledTask -TaskName "PP-SessionSync" `
     -Description "ProPresenter 종료 후 Git과 Nextcloud 동기화를 별도 창에서 실행" -Force | Out-Null
 
 Register-ScheduledTask -TaskName "PP-SessionWatcher" `
-    -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument $WatcherArgs -WorkingDirectory $RepoRoot) `
+    -Action (New-ScheduledTaskAction -Execute "wscript.exe" -Argument $WatcherArgs -WorkingDirectory $RepoRoot) `
     -Trigger $Trigger -Principal $Principal -Settings $Settings `
     -Description "ProPresenter 종료 시 자동 커밋, push, Nextcloud 동기화 실행" -Force | Out-Null
 
