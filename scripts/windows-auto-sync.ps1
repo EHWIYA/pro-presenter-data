@@ -18,7 +18,7 @@ $Errors = New-Object System.Collections.Generic.List[string]
 $Mutex = [System.Threading.Mutex]::new($false, "Local\ProPresenterAutoSync")
 $HasMutex = $false
 $StepNumber = 0
-$StepTotal = 6
+$StepTotal = if ($Mode -eq "Startup") { 7 } else { 6 }
 $GitResult = "확인 전"
 $NextcloudResult = "확인 전"
 $LogPath = Join-Path $LogDir "$LogStamp-$($Mode.ToLower()).log"
@@ -110,6 +110,12 @@ try {
 
     Set-Location $RepoRoot
 
+    if ($Mode -eq "Startup") {
+        Invoke-Checked "자동 동기화 작업 복구" {
+            & (Join-Path $PSScriptRoot "repair-auto-sync-tasks.ps1") -StartWatcher
+        }
+    }
+
     Invoke-Checked "경로 필터 확인" {
         git config --get filter.pp-paths.clean | Out-Null
     }
@@ -120,7 +126,7 @@ try {
 
     git diff --cached --quiet
     if ($LASTEXITCODE -eq 1) {
-        $StepTotal = 7
+        $StepTotal++
         $CommitMessage = "예배 세션 자동 동기화 $Timestamp"
         Invoke-Checked "자동 커밋" {
             git commit -m $CommitMessage
