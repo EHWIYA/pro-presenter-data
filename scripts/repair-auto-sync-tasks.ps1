@@ -8,7 +8,9 @@ $RepoRoot = Split-Path -Parent $PSScriptRoot
 $SyncScript = Join-Path $PSScriptRoot "windows-auto-sync.ps1"
 $WatcherScript = Join-Path $PSScriptRoot "windows-propresenter-watcher.vbs"
 $UserId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-$Principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive -RunLevel Limited
+# Startup sync repairs all three task definitions on every login. Register the
+# tasks elevated so that the repair step can update administrator-created tasks.
+$Principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive -RunLevel Highest
 $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $UserId
 $DefaultSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 $WatcherSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
