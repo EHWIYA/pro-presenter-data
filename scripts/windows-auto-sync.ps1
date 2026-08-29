@@ -28,6 +28,41 @@ Start-Transcript -Path $LogPath | Out-Null
 
 $Host.UI.RawUI.WindowTitle = "ProPresenter 자동 동기화 - $ModeLabel"
 
+function Disable-ConsoleQuickEdit {
+    # 콘솔에서 마우스로 글자를 선택해도 실행이 정지되지 않게 한다.
+    if (-not ("ConsoleMode.NativeMethods" -as [type])) {
+        Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+namespace ConsoleMode {
+    public static class NativeMethods {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr GetStdHandle(int nStdHandle);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+    }
+}
+"@
+    }
+
+    $Handle = [ConsoleMode.NativeMethods]::GetStdHandle(-10)
+    [uint32]$ConsoleMode = 0
+    if ([ConsoleMode.NativeMethods]::GetConsoleMode($Handle, [ref]$ConsoleMode)) {
+        $EnableExtendedFlags = [uint32]0x0080
+        $EnableQuickEditMode = [uint32]0x0040
+        $NewMode = ($ConsoleMode -bor $EnableExtendedFlags) -band (-bnot $EnableQuickEditMode)
+        [ConsoleMode.NativeMethods]::SetConsoleMode($Handle, $NewMode) | Out-Null
+    }
+}
+
+try {
+    Disable-ConsoleQuickEdit
+} catch {
+    # 콘솔이 없는 수동 실행 환경에서도 동기화는 계속한다.
+}
+
 function Write-Banner {
     Write-Host ""
     Write-Host "============================================================" -ForegroundColor DarkCyan
@@ -161,12 +196,7 @@ try {
             Wait-NextcloudReady
             & (Join-Path $PSScriptRoot "nextcloud-sync.bat")
         }
-        $RemoteSizeCheck = Invoke-RcloneQuiet -Arguments @("size", "pp-media:", "--json")
-        if ($RemoteSizeCheck.ExitCode -ne 0) {
-            throw "Nextcloud 파일 현황 확인에 실패했습니다."
-        }
-        $RemoteSize = $RemoteSizeCheck.Output | ConvertFrom-Json
-        $NextcloudResult = "정상 완료 - 파일 $($RemoteSize.count)개"
+        $NextcloudResult = "정상 완료"
     } catch {
         $Success = $false
         $NextcloudResult = "실패"
@@ -203,7 +233,12 @@ try {
     Stop-Transcript | Out-Null
     if ($WaitForKey) {
         Write-Host ""
-        Read-Host "확인했으면 Enter를 눌러 창을 닫으세요"
+        if ($Success) {
+            Write-Host "성공한 창은 10초 후 자동으로 닫힙니다." -ForegroundColor DarkGray
+            Start-Sleep -Seconds 10
+        } else {
+            Read-Host "오류를 확인했으면 Enter를 눌러 창을 닫으세요"
+        }
     }
 }
 
