@@ -8,8 +8,8 @@ set "STATE_DIR=%USERPROFILE%\Documents\pro-presenter\.nextcloud-sync"
 set "MARKER=%STATE_DIR%\resync-done"
 set "LOG=%STATE_DIR%\sync.log"
 
-if not defined PP_SYNC_MAX_ATTEMPTS set "PP_SYNC_MAX_ATTEMPTS=12"
-if not defined PP_SYNC_RETRY_DELAY set "PP_SYNC_RETRY_DELAY=20"
+if not defined PP_SYNC_MAX_ATTEMPTS set "PP_SYNC_MAX_ATTEMPTS=60"
+if not defined PP_SYNC_RETRY_DELAY set "PP_SYNC_RETRY_DELAY=5"
 
 if not exist "%STATE_DIR%" mkdir "%STATE_DIR%"
 if not exist "%LOCAL_PATH%" mkdir "%LOCAL_PATH%"

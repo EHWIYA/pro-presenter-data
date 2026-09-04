@@ -110,8 +110,8 @@ function Invoke-RcloneQuiet {
 
 function Wait-NextcloudReady {
     param(
-        [int]$MaxAttempts = 12,
-        [int]$RetryDelaySeconds = 20
+        [int]$MaxAttempts = 60,
+        [int]$RetryDelaySeconds = 5
     )
 
     Write-Host "      [확인] Nextcloud 연결 준비 상태를 확인합니다." -ForegroundColor Cyan
