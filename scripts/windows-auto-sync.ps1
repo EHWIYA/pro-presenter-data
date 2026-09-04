@@ -71,6 +71,8 @@ function Write-Banner {
     Write-Host "  실행 이유  $ModeLabel"
     Write-Host "  시작 시각  $Timestamp"
     Write-Host "  저장 위치  $RepoRoot"
+    Write-Host "  진행 안내  GitHub 자산 확인 후 Nextcloud 미디어를 양방향 동기화합니다."
+    Write-Host "             창을 닫거나 PC를 끄지 말고 완료 메시지를 확인하세요."
     Write-Host "------------------------------------------------------------" -ForegroundColor DarkGray
 }
 
@@ -115,11 +117,13 @@ function Wait-NextcloudReady {
     )
 
     Write-Host "      [확인] Nextcloud 연결 준비 상태를 확인합니다." -ForegroundColor Cyan
+    Write-Host "      네트워크 준비가 늦으면 5초 간격으로 최대 60회(약 5분) 기다립니다." -ForegroundColor DarkGray
 
     for ($Attempt = 1; $Attempt -le $MaxAttempts; $Attempt++) {
         $ConnectionCheck = Invoke-RcloneQuiet -Arguments @("lsd", "pp-media:")
         if ($ConnectionCheck.ExitCode -eq 0) {
             Write-Host "      [준비 완료] Nextcloud에 연결되었습니다." -ForegroundColor Green
+            Write-Host "      이어서 파일별 전송량·속도·남은 시간이 실시간으로 표시됩니다." -ForegroundColor DarkGray
             return
         }
 
@@ -224,6 +228,7 @@ try {
     Write-Host "------------------------------------------------------------" -ForegroundColor DarkGray
     if ($Success) {
         Write-Host "  모든 동기화가 안전하게 완료되었습니다." -ForegroundColor Green
+        Write-Host "  이제 ProPresenter를 실행하거나 PC를 종료해도 됩니다." -ForegroundColor Green
     } else {
         Write-Host "  일부 작업이 실패했습니다. 이 창을 닫지 마세요." -ForegroundColor Red
         $Errors | ForEach-Object { Write-Host "- $_" -ForegroundColor Red }
