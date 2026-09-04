@@ -22,7 +22,7 @@ if not exist "%MARKER%" set "RESYNC_FLAG=--resync"
 echo.
 echo [Nextcloud] Sync attempt !SYNC_ATTEMPT! of %PP_SYNC_MAX_ATTEMPTS%
 echo [Nextcloud] The progress below shows transferred size, speed, ETA, and file count.
-echo [Nextcloud] Local : %LOCAL_PATH%
+echo [Nextcloud] Local : Media\Assets
 echo [Nextcloud] Remote: %REMOTE_NAME%:
 echo.
 
