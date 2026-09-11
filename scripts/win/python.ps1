@@ -3,7 +3,7 @@ function Find-Python {
     $candidates = @()
     foreach ($name in @("python", "python3")) {
         $command = Get-Command $name -ErrorAction SilentlyContinue
-        if ($command -and $command.Source -notmatch "\WindowsApps\") {
+        if ($command -and $command.Source -notmatch '\\WindowsApps\\') {
             $candidates += $command.Source
         }
     }
@@ -11,15 +11,15 @@ function Find-Python {
         if (Test-Path -LiteralPath $base) {
             $candidates += Get-ChildItem -LiteralPath $base -Filter python.exe `
                 -Recurse -ErrorAction SilentlyContinue |
-                Where-Object { $_.FullName -notmatch "\WindowsApps\" } |
+                Where-Object { $_.FullName -notmatch '\\WindowsApps\\' } |
                 Select-Object -ExpandProperty FullName
         }
     }
     foreach ($candidate in ($candidates | Sort-Object -Unique -Descending)) {
         try {
-            & $candidate -c "import sys; raise SystemExit(sys.version_info < (3, 8))"
+            & $candidate -c "import sys; raise SystemExit(sys.version_info < (3, 10))"
             if ($LASTEXITCODE -eq 0) { return $candidate }
         } catch { continue }
     }
-    throw "Python 3.8 or newer was not found."
+    throw "Python 3.10 or newer was not found."
 }

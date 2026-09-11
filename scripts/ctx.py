@@ -1,6 +1,9 @@
 # 주제별 핵심 문맥과 현재 Git 상태를 짧게 출력한다.
 import argparse
 import subprocess
+import sys
+
+sys.dont_write_bytecode = True
 
 from core.context import ROOT, load_topics
 

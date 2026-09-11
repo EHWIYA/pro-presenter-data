@@ -1,6 +1,8 @@
 # ProPresenter 경로 정규화의 호환 명령행 진입점을 제공한다.
 import sys
 
+sys.dont_write_bytecode = True
+
 from core.cli import main
 from core.config import PORTABLE_ROOT, runtime_root
 from core.transform import transform

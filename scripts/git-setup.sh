@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 PY="$(command -v python3 2>/dev/null || true)"
-if [ -z "$PY" ] || ! "$PY" -c 'import sys; raise SystemExit(sys.version_info < (3, 8))'; then
-  echo "Python 3.8 or newer is required." >&2
+if [ -z "$PY" ] || ! "$PY" -c 'import sys; raise SystemExit(sys.version_info < (3, 10))'; then
+  echo "Python 3.10 or newer is required." >&2
   exit 1
 fi
 printf -v FILTER_PY '%q' "$PY"

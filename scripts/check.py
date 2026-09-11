@@ -1,4 +1,10 @@
 # 저장소 구조, 문서, 캐시와 자동화 구문을 한 번에 검증한다.
+import os
+import sys
+
+os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+sys.dont_write_bytecode = True
+
 from core.commands import command_errors
 from core.links import link_errors
 from core.policy import folder_errors, header_errors, line_errors
