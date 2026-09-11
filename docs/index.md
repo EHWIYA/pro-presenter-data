@@ -1,6 +1,7 @@
 # 문서 목차
 
-README와 AGENTS는 진입점이며 세부 내용은 이 폴더가 정본이다.
+처음 사용하는 사람은 README부터 읽는다. 작업 규칙은 AGENTS에서 확인하고,
+자세한 설명은 이 `docs` 폴더에서 확인한다.
 
 | 영역 | 문서 | 내용 |
 |---|---|---|
@@ -12,7 +13,7 @@ README와 AGENTS는 진입점이며 세부 내용은 이 폴더가 정본이다.
 | 운영 | [ops/sync.md](ops/sync.md) | 자동 동기화 |
 | 운영 | [ops/themes.md](ops/themes.md) | 테마 프로필 |
 | 운영 | [ops/fonts.md](ops/fonts.md) | 글꼴 설치 |
-| 문맥 | [ctx/map.md](ctx/map.md) | 작업별 최소 읽기 |
+| 안내 | [ctx/map.md](ctx/map.md) | 작업별로 먼저 읽을 문서 |
 
 문서와 스크립트는 파일당 50줄 이하를 유지한다. 검사는
 `python scripts/check.py`로 실행한다.

@@ -1,16 +1,16 @@
-# 현재 상태 (2026-08-20)
+# 2026-08-20 현재 상태
 
 | 영역 | 상태 |
 |------|------|
-| PWA 호스팅 | ✅ pro-app.iwhya.kr |
-| NAS API | ✅ GHCR :main, Postgres 곡 DB |
-| pro-presenter-agent | ❌ 제거 |
-| 자산 repo | ✅ pro-presenter-data (`Documents/pro-presenter`) |
-| 재생목록 경로 | ✅ `pp-paths` filter · Win/Mac setup 스크립트 (PC당 1회) |
-| 경로 smudge | ✅ checkout identity · PP 직전 `smudge-files` · Mac `file://%2F` clean (2026-08-02) |
-| Git LFS 대역폭 초과 | ✅ 해결 — `Media/Assets` Git 추적 제외, NAS Nextcloud로 이관 (2026-08-20) |
-| Media/Assets 동기화 | ✅ 이 PC(Win) 완료 · ⏳ 다른 PC 미설정 — [media.md](../repo/media.md) |
-| 예배 세션 자동 동기화 | ✅ 이 PC(Win) 적용 · ⏳ 다른 PC 미설정 — [sync.md](../ops/sync.md) |
-| Cursor 사용 | ❌ 종료 — `.cursor` 제거, `AGENTS.md`/`CLAUDE.md`로 통합 (2026-08-20) |
+| 휴대폰 웹 화면 | 완료했다. 주소는 pro-app.iwhya.kr이다. |
+| NAS 서버 | 완료했다. Postgres 곡 데이터베이스를 사용한다. |
+| pro-presenter-agent | 제거했다. |
+| 자료 저장소 | 완료했다. 위치는 `Documents/pro-presenter`다. |
+| 재생목록 경로 | Windows와 Mac의 초기 설정 스크립트에 적용했다. 각 PC에서 한 번 실행한다. |
+| PC별 경로 적용 | ProPresenter를 열기 직전에 `smudge-files`를 실행한다. |
+| GitHub 전송 한도 | 해결했다. `Media/Assets`를 Nextcloud로 옮겼다. |
+| 미디어 동기화 | 이 Windows PC는 완료했다. 다른 PC는 [설정이 필요하다](../repo/media.md). |
+| 예배 자료 자동 동기화 | 이 Windows PC는 완료했다. 다른 PC는 [설정이 필요하다](../ops/sync.md). |
+| Cursor 설정 | 2026-08-20에 `.cursor`를 제거하고 `AGENTS.md`로 통합했다. |
 
-갱신 시 이 파일만 수정. 스냅샷 날짜를 표제에 반영.
+상태가 바뀌면 이 파일만 수정하고 제목의 날짜도 함께 바꾼다.

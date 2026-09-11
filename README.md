@@ -1,6 +1,7 @@
-# pro-presenter-data
+# ProPresenter 예배 자료
 
-ProPresenter Show Directory의 Git 정본이다. 미디어는 Nextcloud에서 관리한다.
+이 폴더에는 ProPresenter가 사용하는 예배 자료가 있다. 문서와 테마는
+GitHub에 저장하고, 용량이 큰 영상·음원·이미지는 Nextcloud에 저장한다.
 
 ## 처음 설정
 
@@ -17,14 +18,15 @@ powershell -ExecutionPolicy Bypass -File scripts/git-setup.ps1
 powershell -ExecutionPolicy Bypass -File scripts/auto-setup.ps1
 ```
 
-Nextcloud 원격 이름은 `pp-media`로 설정한다. 앱 비밀번호를 사용하고,
-원격의 `PP_Media_Assets` 폴더를 `Media/Assets`와 연결한다.
+Nextcloud 연결 이름은 `pp-media`로 정한다. 일반 로그인 비밀번호 대신
+Nextcloud 앱 비밀번호를 사용한다. 서버의 `PP_Media_Assets` 폴더는 이 PC의
+`Media/Assets` 폴더와 연결한다.
 
 ## 평소 사용
 
 1. 로그인 동기화가 끝난 뒤 ProPresenter를 연다.
 2. 작업 후 ProPresenter를 완전히 종료한다.
-3. 자동 동기화 결과에서 GitHub와 Nextcloud 성공을 확인한다.
+3. 자동 동기화 결과에서 GitHub와 Nextcloud가 모두 성공했는지 확인한다.
 
 실패 로그는 `.nextcloud-sync/auto-sync-logs`에 남는다.
 

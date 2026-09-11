@@ -1,29 +1,32 @@
-# 레포별 상세
+# 저장소별 역할
 
-## 1. front-end
+## 휴대폰 웹 화면
 
-**미션:** PWA · pro-api만
+사용자는 이 화면에서 성경 구절과 찬양을 입력한다. 이 화면은 NAS 서버에만
+연결하며 ProPresenter에는 직접 연결하지 않는다.
 
-스택: React 19 · Vite 6 · TanStack Query 5 · CSS Modules · PWA  
-배포: GHA → rsync → NAS `/home/iwh/pro-presenter/web/dist`
+개발에는 React 19, Vite 6, TanStack Query 5, CSS Modules를 사용한다.
+GitHub 자동 배포가 NAS의 `/home/iwh/pro-presenter/web/dist`로 파일을 보낸다.
 
-**금지:** PP :12135 직접 호출 · `verse/send` · `auto_trigger: true` 기본
-
----
-
-## 2. back-end
-
-**미션:** NAS BFF · 성경·곡 DB · .pro 생성 안 함
-
-실행: Docker `:8003` · Postgres `:5434` · NAS 설정(`venues.json`, `.env`)은 레포 밖
-
-**금지:** .pro 직접 생성 · PP REST 슬라이드 추가
+ProPresenter의 `:12135` 주소를 직접 사용하거나 자동 송출을 기본으로 켜지 않는다.
 
 ---
 
-## 3. data (이 repo)
+## NAS 서버
 
-**미션:** Show Directory Git · `Media/Assets/` Nextcloud · Configuration 제외
+이 서버는 성경과 곡 데이터베이스를 관리한다. `.pro` 파일은 만들지 않는다.
+
+Docker의 `:8003`에서 실행하며 데이터베이스는 Postgres `:5434`를 사용한다.
+NAS 설정 파일인 `venues.json`과 `.env`는 GitHub에 저장하지 않는다.
+
+ProPresenter에 직접 슬라이드를 추가하지 않는다.
+
+---
+
+## ProPresenter 자료 저장소
+
+이 저장소가 현재 폴더다. ProPresenter 문서와 테마는 GitHub에 저장한다.
+`Media/Assets/`는 Nextcloud에 저장하고 `Configuration`은 각 PC에만 둔다.
 
 → [../repo/layout.md](../repo/layout.md)
 
@@ -31,6 +34,6 @@
 
 ## 제거됨
 
-| 레포 | 상태 |
+| 저장소 | 상태 |
 |------|------|
-| EHWIYA/pro-presenter-agent | 제거 — Windows `.pro` 빌드·PP 트리거 에이전트 더 이상 사용하지 않음 |
+| EHWIYA/pro-presenter-agent | 제거했다. Windows에서 `.pro` 파일을 만들거나 ProPresenter를 자동 실행하지 않는다. |

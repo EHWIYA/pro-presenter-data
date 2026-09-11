@@ -1,12 +1,12 @@
-# 고정 사실 캐시
+# 바뀌지 않는 기본 정보
 
 - 저장소는 `%USERPROFILE%\Documents\pro-presenter`에 둔다.
-- Git 원격은 `github.com/EHWIYA/pro-presenter-data`다.
-- ProPresenter UI는 재생목록에서 `Libraries/*.pro`를 참조한다.
-- Git 자산은 `Libraries`, `Playlists`, `Presets`, `Themes`, `Fonts`다.
-- `Media/Assets`는 `pp-media` Nextcloud 원격과 bisync한다.
-- 경로 정본은 `%USERPROFILE%\Documents\pro-presenter` 형식이다.
+- GitHub 저장소 주소는 `github.com/EHWIYA/pro-presenter-data`다.
+- ProPresenter 화면의 재생목록은 `Libraries/*.pro` 파일을 사용한다.
+- Git에는 `Libraries`, `Playlists`, `Presets`, `Themes`, `Fonts`를 저장한다.
+- `Media/Assets`는 `pp-media`라는 Nextcloud 연결과 양방향으로 동기화한다.
+- Git에 저장하는 경로는 `%USERPROFILE%\Documents\pro-presenter` 형식이다.
 - 경로 변환 전 ProPresenter를 완전히 종료한다.
-- PWA와 BFF는 별도 저장소이며 여기서 수정하지 않는다.
+- 휴대폰 웹 화면과 NAS 서버는 별도 저장소에 있으므로 여기서 수정하지 않는다.
 
-변경 가능한 상태는 이 파일에 저장하지 않고 실행 시 조회한다.
+현재 브랜치나 변경 파일처럼 자주 바뀌는 정보는 실행할 때 확인한다.

@@ -1,6 +1,6 @@
-# 작업별 문맥 지도
+# 작업별 문서 안내
 
-| 주제 | 먼저 읽을 문서 |
+| 작업 | 먼저 읽을 문서 |
 |---|---|
 | 규칙 | `rules/base.md`, `rules/<주제>.md` |
 | Git | `repo/git.md`, `rules/git.md` |
@@ -11,5 +11,5 @@
 | 글꼴 | `ops/fonts.md` |
 | 전체 시스템 | `sys/map.md`, `sys/repos.md` |
 
-명령형 조회는 `python scripts/ctx.py git|paths|media|sync|themes|fonts`를
-사용한다. 출력은 관련 문서와 핵심 사실만 반환한다.
+필요한 문서만 찾으려면
+`python scripts/ctx.py git|paths|media|sync|themes|fonts`를 실행한다.
