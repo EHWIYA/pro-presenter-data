@@ -5,7 +5,7 @@
 | Windows | `%USERPROFILE%\Documents\pro-presenter` |
 | Mac | `~/Documents/pro-presenter` |
 
-Git으로 관리하는 폴더와 ProPresenter가 사용하는 기본 폴더는 같다.
+Git으로 관리하는 폴더와 ProPresenter가 사용하는 기본 폴더가 동일.
 
 | 경로 | 저장 위치 | 역할 |
 |---|---|---|
@@ -17,8 +17,8 @@ Git으로 관리하는 폴더와 ProPresenter가 사용하는 기본 폴더는 �
 | `Configuration/` | 각 PC | 해당 PC에서만 쓰는 설정 |
 
 ProPresenter의 Library, Support Files, Media 위치는 모두 이 기본 폴더
-아래로 맞춘다. `%APPDATA%\LocalWorkspaces`와 함께 사용하지 않는다.
+아래로 설정. `%APPDATA%\LocalWorkspaces`와 함께 사용 금지.
 
 Mac에서는 iCloud의 바탕화면 및 Documents 폴더 동기화를 꺼서 Git과
-ProPresenter 잠금 충돌을 막는다. 경로 템플릿은
-[paths.standard.json](../../paths.standard.json)에 있다.
+ProPresenter의 파일 잠금 충돌 방지. 경로 기본값은
+[paths.standard.json](../../paths.standard.json) 참고.

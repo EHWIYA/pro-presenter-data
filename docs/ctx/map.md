@@ -12,4 +12,4 @@
 | 전체 시스템 | `sys/map.md`, `sys/repos.md` |
 
 필요한 문서만 찾으려면
-`python scripts/ctx.py git|paths|media|sync|themes|fonts`를 실행한다.
+`python scripts/ctx.py git|paths|media|sync|themes|fonts` 실행.

@@ -2,12 +2,12 @@
 
 ## 한 줄 요약
 
-휴대폰 웹 화면(PWA)에서 성경 구절이나 찬양을 입력한다. NAS의 서버(BFF)는
-내용을 읽고 곡 데이터베이스를 관리한다. ProPresenter 자료는 별도 GitHub
-저장소인 `pro-presenter-data`에서 관리한다.
+휴대폰 웹 화면(PWA)에서 성경 구절이나 찬양 입력. NAS의 서버(BFF)는
+내용을 읽고 곡 데이터베이스 관리. ProPresenter 자료는 별도 GitHub
+저장소인 `pro-presenter-data`에서 관리.
 
-`pro-presenter-agent`는 제거했다. 슬라이드 제작과 송출은 Windows 자동화가
-아니라 ProPresenter 화면에서 사람이 직접 진행한다.
+`pro-presenter-agent`는 제거됨. 슬라이드 제작과 송출은 Windows 자동화가
+아니라 ProPresenter 화면에서 사람이 직접 진행.
 
 ## 아키텍처
 
@@ -17,7 +17,7 @@
   ▼
 [NAS 서버]  pro-api.iwhya.kr → :8003
   │  성경 데이터 · 곡 데이터베이스
-  └─ 127.0.0.1:18080 ──▶ 인공지능 악보 분석
+  └─ 127.0.0.1:18080 ──▶ 인공지능으로 악보 분석
 
 [ProPresenter 자료] Documents/pro-presenter (GitHub)
 ```
@@ -43,7 +43,7 @@
 ```
 휴대폰 웹 화면  ──▶  NAS 서버
 NAS 서버         ──▶  인공지능 악보 분석
-ProPresenter 자료 ◀──  ProPresenter 앱에서 사람이 편집하고 송출한다.
+ProPresenter 자료 ◀──  ProPresenter 앱에서 사람이 편집하고 송출
 ```
 
 → [rules.md](rules.md) · [flow.md](flow.md) · [repos.md](repos.md)
