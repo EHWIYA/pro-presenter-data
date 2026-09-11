@@ -1,6 +1,6 @@
 #!/bin/sh
 # Intentionally no smudge on checkout/discard.
 # Working tree stays Git-portable until:
-#   python3 scripts/pp_path_normalize.py smudge-files
+#   python3 scripts/path.py smudge-files
 # (run immediately before opening ProPresenter)
 exit 0

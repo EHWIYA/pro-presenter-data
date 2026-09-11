@@ -3,7 +3,7 @@
 cd "$(git rev-parse --show-toplevel)" || exit 1
 if ! git config --get filter.pp-paths.clean >/dev/null; then
   echo "ERROR: pp-paths Git filter not configured." >&2
-  echo "Run once:  powershell -File scripts/setup-git-filters.ps1" >&2
+  echo "Run once:  powershell -File scripts/git-setup.ps1" >&2
   exit 1
 fi
 # Working tree stays portable after pull; run smudge-files before PP.

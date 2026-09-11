@@ -1,6 +1,6 @@
-# githooks (core.hooksPath)
+# Git hooks
 
-`scripts/setup-git-filters.ps1` (Win) 또는 `scripts/setup-git-filters.sh` (Mac)이 `core.hooksPath`를 여기로 지정한다.
+`scripts/git-setup.ps1`(Win) 또는 `scripts/git-setup.sh`(Mac)이 이 경로를 등록한다.
 
 | hook | 역할 |
 |------|------|
@@ -12,7 +12,7 @@
 | 시점 | 동작 |
 |------|------|
 | `git add` / commit | **clean** filter → Git portable |
-| PP 열기 직전 | `python3 scripts/pp_path_normalize.py smudge-files` (명시) |
+| PP 열기 직전 | `python3 scripts/path.py smudge-files` (명시) |
 | checkout/pull | smudge filter = identity (파일 그대로) |
 
 Mac는 executable bit 필요 → setup.sh가 `chmod +x` 한다.

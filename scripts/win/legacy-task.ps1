@@ -1,11 +1,11 @@
-# Windows: PC 로그온 시 nextcloud-sync.bat 1회 자동 실행되도록 작업 스케줄러에 등록 (최초 1회만 실행)
+﻿# Windows: PC 로그온 시 nextcloud-sync.bat 1회 자동 실행되도록 작업 스케줄러에 등록 (최초 1회만 실행)
 $ErrorActionPreference = "Stop"
 
 $TaskName = "PP-NextcloudSync"
-$BatPath = Join-Path $env:USERPROFILE "Documents\pro-presenter\scripts\nextcloud-sync.bat"
+$BatPath = Join-Path $env:USERPROFILE "Documents\pro-presenter\scripts\sync.bat"
 
 if (-not (Test-Path $BatPath)) {
-    throw "nextcloud-sync.bat 을 찾을 수 없습니다: $BatPath"
+    throw "sync.bat 을 찾을 수 없습니다: $BatPath"
 }
 
 $Action = New-ScheduledTaskAction -Execute $BatPath
