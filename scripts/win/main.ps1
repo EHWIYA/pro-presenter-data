@@ -16,9 +16,11 @@ try {
     }
     Set-Location $RepoRoot
     if ($Mode -eq "Startup") {
-        Invoke-Checked "자동 동기화 작업 복구" {
-            & (Join-Path $RepoRoot "scripts\win\tasks.ps1") -StartWatcher
-        }
+        try {
+            Invoke-Checked "자동 동기화 작업 복구" {
+                & (Join-Path $RepoRoot "scripts\win\tasks.ps1") -StartWatcher
+            }
+        } catch { Add-SyncWarning "예약 작업 복구 실패. 자료 동기화는 계속합니다. $($_.Exception.Message)" }
     }
     Initialize-GitAssets
     try {

@@ -19,6 +19,9 @@ function Write-SyncResult {
     Write-Host "  Nextcloud    $NextcloudResult"
     Write-Host "  완료 시각    $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
     Write-Host "  상세 로그    $LogPath"
+    if ($Warnings.Count) {
+        $Warnings | ForEach-Object { Write-Host "  경고         $_" -ForegroundColor Yellow }
+    }
     if ($Success) {
         Write-Host "  모든 동기화가 안전하게 완료되었습니다." -ForegroundColor Green
     } else {

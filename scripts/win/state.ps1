@@ -10,6 +10,7 @@ function Initialize-SyncState {
     $script:ModeLabel = if ($Mode -eq "Startup") { "PC 로그인" } else { "ProPresenter 종료" }
     $script:Success = $true
     $script:Errors = [Collections.Generic.List[string]]::new()
+    $script:Warnings = [Collections.Generic.List[string]]::new()
     $script:Mutex = [Threading.Mutex]::new($false, "Local\ProPresenterAutoSync")
     $script:HasMutex = $false
     $script:StepNumber = 0
@@ -27,4 +28,10 @@ function Add-SyncError {
     $script:Success = $false
     $script:Errors.Add($Message)
     Write-Host $Message -ForegroundColor Red
+}
+
+function Add-SyncWarning {
+    param([string]$Message)
+    $script:Warnings.Add($Message)
+    Write-Warning $Message
 }

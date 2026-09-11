@@ -5,12 +5,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$SyncScript = Join-Path $RepoRoot "scripts\auto.ps1"
-$WatcherScript = Join-Path $PSScriptRoot "watch.vbs"
+$SyncScript = Join-Path $RepoRoot "scripts\windows-auto-sync.ps1"
+$WatcherScript = Join-Path $RepoRoot "scripts\windows-propresenter-watcher.vbs"
 $UserId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-# Startup sync repairs all three task definitions on every login. Register the
-# tasks elevated so that the repair step can update administrator-created tasks.
-$Principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive -RunLevel Highest
+# Git, rclone과 감시기는 관리자 권한이 필요 없으므로 사용자가 직접 복구한다.
+$Principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive -RunLevel Limited
 $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $UserId
 $DefaultSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 $WatcherSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
@@ -23,8 +22,8 @@ foreach ($Path in @($SyncScript, $WatcherScript)) {
     }
 }
 
-$StartupArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -Mode Startup -WaitForKey"
-$SessionArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -Mode Session -WaitForKey"
+$StartupArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -Mode Startup"
+$SessionArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -Mode Session"
 
 Register-ScheduledTask -TaskName "PP-StartupSync" `
     -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument $StartupArgs -WorkingDirectory $RepoRoot) `
