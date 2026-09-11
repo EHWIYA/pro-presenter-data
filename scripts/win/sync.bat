@@ -1,4 +1,5 @@
 @echo off
+rem Synchronize Media Assets with Nextcloud and retry failures.
 setlocal EnableExtensions EnableDelayedExpansion
 
 set "REMOTE_NAME=pp-media"
