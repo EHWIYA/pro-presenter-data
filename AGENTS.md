@@ -15,7 +15,6 @@ GitHub에 저장된 내용을 기준으로 사용.
 - `Media/Assets/`와 `Configuration/` 폴더의 Git 추가 금지.
 - `git init`, `remote add`, 재생목록 경로의 직접 변경 금지.
 - 사용자마다 달라지는 홈 폴더 대신 `%USERPROFILE%` 사용.
-- 이 저장소에서 웹 앱(PWA)이나 서버(BFF) 코드 수정 금지.
 - 관련 없는 변경과 사용자의 기존 작업 되돌리기 금지.
 
 ## 빠른 명령

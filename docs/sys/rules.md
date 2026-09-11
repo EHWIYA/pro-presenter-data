@@ -4,6 +4,7 @@
 |------|------|
 | 디자인 | 사람이 ProPresenter에서 템플릿과 테마를 한 번 제작 |
 | 송출 | 사람이 ProPresenter 화면에서 직접 송출 |
-| 여러 교회 | NAS 한 대를 함께 쓰고 교회 PC마다 ProPresenter 자료 폴더 배치 |
-| 연결 범위 | 휴대폰 웹 화면은 NAS 서버만 사용하고 ProPresenter 직접 연결 금지 |
+| 작업 폴더 | ProPresenter 기본 폴더와 Git 작업 폴더를 같은 위치에 배치 |
+| 동기화 | ProPresenter 종료 뒤 GitHub와 Nextcloud에 나누어 저장 |
 | 저장 위치 | 문서·테마는 GitHub, `Media/Assets/`는 Nextcloud에 저장 |
+| PC 설정 | `Configuration`은 동기화하지 않고 각 PC에만 보관 |

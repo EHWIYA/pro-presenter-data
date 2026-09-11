@@ -5,5 +5,5 @@
   "sync": {"summary": "Windows는 로그인과 PP 종료 시 Git과 Nextcloud를 동기화한다.", "files": ["docs/ops/sync.md", "docs/repo/git.md"]},
   "themes": {"summary": "테마는 Libraries 슬라이드에 레이아웃으로 베이크된다.", "files": ["docs/ops/themes.md", "docs/ops/profiles.md"]},
   "fonts": {"summary": "Fonts가 정본이지만 각 OS에도 글꼴을 설치해야 한다.", "files": ["docs/ops/fonts.md"]},
-  "system": {"summary": "PWA와 BFF는 별도 저장소이며 이곳은 PP 자산 정본이다.", "files": ["docs/sys/map.md", "docs/sys/repos.md"]}
+  "system": {"summary": "ProPresenter 자료를 GitHub와 Nextcloud에 나누어 동기화한다.", "files": ["docs/sys/map.md", "docs/sys/flow.md"]}
 }

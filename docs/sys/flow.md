@@ -1,21 +1,18 @@
-# 처음부터 송출까지의 흐름
+# 로그인부터 송출까지의 흐름
 
-`pro-presenter-agent` 제거로 `.pro` 파일 생성과 ProPresenter 실행 자동화 없음.
-슬라이드 제작과 송출은 사람이 ProPresenter에서 직접 진행.
+## Windows
 
-## 성경 구절
+1. 로그인 뒤 GitHub와 Nextcloud 자동 동기화 완료 기다리기.
+2. ProPresenter를 열고 `Documents/pro-presenter`의 자료 사용하기.
+3. 슬라이드와 재생목록을 ProPresenter 화면에서 직접 편집하기.
+4. ProPresenter 화면에서 예배 송출하기.
+5. 작업 뒤 ProPresenter 완전 종료하기.
+6. 종료 뒤 GitHub와 Nextcloud 자동 동기화 결과 확인하기.
 
-```
-[휴대폰 웹 화면] 교회 선택 → 구절 입력(예: 마 3:1-10)
-  → [NAS 서버] 성경 데이터를 읽고 두 줄씩 나누기
-  → [사람] ProPresenter에서 해당 Libraries/*.pro를 편집하고 송출하기
-```
+GitHub에는 문서·재생목록·테마·글꼴 저장. Nextcloud에는
+`Media/Assets`의 영상·음원·이미지 저장. `Configuration`은 PC별 보관.
 
-## 찬양 악보
+## Mac
 
-```
-[휴대폰 웹 화면] 악보 이미지 업로드
-  → [NAS 서버] 인공지능으로 절과 후렴을 구분하고 두 줄씩 나누기
-  → [사람] 결과를 확인하고 고치기
-  → [사람] ProPresenter의 Libraries/<분류>/<제목>.pro에 반영하고 송출하기
-```
+Git 경로 변환과 로그인 시 Nextcloud 동기화만 지원. 작업 전후 수동으로
+Git 동기화하고 ProPresenter 종료 전에 Nextcloud 동기화 완료 확인하기.

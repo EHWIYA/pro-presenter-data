@@ -12,6 +12,24 @@ class DocumentationRuleTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)
 
+    def test_retired_web_architecture_is_absent(self):
+        files = [ROOT / "AGENTS.md", ROOT / "README.md"]
+        files += list((ROOT / "docs").rglob("*.md"))
+        files += [ROOT / "docs/ctx/topics.json", ROOT / "paths.standard.json"]
+        retired = (
+            "pro-app.iwhya.kr",
+            "pro-api.iwhya.kr",
+            "pro-presenter-front-end",
+            "pro-presenter-back-end",
+            "휴대폰 웹 화면",
+            "PWA",
+            "BFF",
+        )
+        text = "\n".join(path.read_text(encoding="utf-8-sig") for path in files)
+        for phrase in retired:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, text)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,9 +15,7 @@
     "primary_nextcloud_paths": ["Media/Assets/"]
   },
   "github": {
-    "assets_repo": "EHWIYA/pro-presenter-data",
-    "front_end_repo": "EHWIYA/pro-presenter-front-end",
-    "back_end_repo": "EHWIYA/pro-presenter-back-end"
+    "assets_repo": "EHWIYA/pro-presenter-data"
   },
   "docs": "docs/index.md",
   "platforms": {
