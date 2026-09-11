@@ -6,4 +6,4 @@
 | 송출 | ProPresenter UI에서 수동 송출 |
 | 다교회 | NAS 1대 + 교회 PC마다 PP Show Directory(data) |
 | BFF 경계 | PWA는 pro-api만 호출. PP :12135 직접 호출 금지 |
-| 자산 정본 | `pro-presenter-data` Git — `Libraries/` `Playlists/` `Themes/` `Media/Assets/` |
+| 자산 정본 | Git은 PP 문서·테마, Nextcloud는 `Media/Assets/` |

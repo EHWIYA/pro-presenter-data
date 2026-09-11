@@ -43,4 +43,4 @@ back-end   ──▶  cursor-llm-gateway
 data       ◀──  ProPresenter 앱 (수동 편집·송출)
 ```
 
-→ [principles.md](principles.md) · [flows.md](flows.md) · [repos.md](repos.md)
+→ [rules.md](rules.md) · [flow.md](flow.md) · [repos.md](repos.md)

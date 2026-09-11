@@ -23,9 +23,9 @@
 
 ## 3. data (이 repo)
 
-**미션:** Show Directory Git · `Media/Assets/` LFS · Configuration 제외
+**미션:** Show Directory Git · `Media/Assets/` Nextcloud · Configuration 제외
 
-→ [../data/repo.md](../data/repo.md)
+→ [../repo/layout.md](../repo/layout.md)
 
 ---
 

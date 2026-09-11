@@ -1,44 +1,27 @@
-# AGENTS — pro-presenter-data
+# ProPresenter 자산 저장소 작업 안내
 
-자산 Git repo. ProPresenter Show Directory 정본. (Cursor 사용 종료 — Claude Code·Codex 기준)
+이 저장소는 ProPresenter Show Directory 정본이다.
 
-## 먼저 읽기
+## 시작 순서
 
-| 필요 시 | 문서 |
-|---------|------|
-| 시스템 개요 | [docs/system/overview.md](docs/system/overview.md) |
-| 이 repo | [docs/data/repo.md](docs/data/repo.md) |
-| 테마·재생목록 | [docs/handoff/theme-profiles.md](docs/handoff/theme-profiles.md) |
-| 목차 | [docs/index.md](docs/index.md) |
+1. ProPresenter가 완전히 종료됐는지 확인한다.
+2. [기본 규칙](docs/rules/base.md)을 읽는다.
+3. [문맥 지도](docs/ctx/map.md)에서 작업별 문서만 읽는다.
+4. 변경 전 테스트를 만들고 완료 전 전체 검사를 실행한다.
 
-맥락 질문 시 문서 먼저 — 없는 내용만 탐색·수정. 문서 내용을 채팅에 장문으로 재작성하지 말 것 — 링크·한두 줄 요약.
+## 절대 금지
 
-## 빠른 참조
+- `Media/Assets/`와 `Configuration/`을 Git에 넣지 않는다.
+- `git init`, `remote add`, 재생목록 문자열 수동 치환을 하지 않는다.
+- 사용자 경로를 하드코딩하지 않고 `%USERPROFILE%`을 사용한다.
+- 이 저장소에서 PWA나 BFF 코드를 수정하지 않는다.
+- 관련 없는 변경과 사용자의 기존 작업을 되돌리지 않는다.
 
-| 항목 | 값 |
-|------|-----|
-| 원격 | `github.com/EHWIYA/pro-presenter-data` |
-| 경로 | `%USERPROFILE%\Documents\pro-presenter` |
-| PP UI | 재생목록 → `Libraries/*.pro` |
-| 신규 PC | Win: `scripts/setup-git-filters.ps1` · Mac: `scripts/setup-git-filters.sh` |
-| 미디어(Media/Assets) | Git 아님 — Nextcloud, `scripts/nextcloud-sync.bat`/`.sh`(rclone bisync)로 동기화 |
+## 빠른 명령
 
-## 워크스페이스 경계
+- 문맥 조회는 `python scripts/ctx.py <topic>`을 사용한다.
+- 전체 검사는 `python scripts/check.py`를 사용한다.
+- 경로 변환은 `python scripts/pp_path_normalize.py`만 사용한다.
 
-| 작업 | 위치 |
-|------|------|
-| PP 자산 Git | **여기** |
-| PWA·BFF | 각각 별 repo — **여기서 수정 안 함** |
-
-## 하지 말 것
-
-- `Media/Assets/` git commit 금지 (Nextcloud 관리 — Git LFS 대역폭 한도 초과로 이관됨)
-- `Configuration/` `.env` commit 금지
-- `git init` / `remote add` 재실행 금지 — 이미 완료
-- 재생목록 경로 수동 문자열 치환 금지 — protobuf 길이 필드 깨져 재생목록 소실 위험, 반드시 `scripts/pp_path_normalize.py` 사용
-- 작업 전 ProPresenter **완전 종료**
-- `C:\Users\사용자명\...` 하드코딩 금지 — `%USERPROFILE%` 사용
-
-## 완료됨 — 재실행 금지
-
-Git init·origin·첫 push · `docs/` 정본화
+문서 목차는 [docs/index.md](docs/index.md), 저장소 운영은
+[docs/repo/git.md](docs/repo/git.md)를 참고한다.
