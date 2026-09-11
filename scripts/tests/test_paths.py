@@ -1,10 +1,12 @@
 # ProPresenter 경로 변환기의 핵심 동작을 합성 protobuf로 검증한다.
 import importlib.util
 import pathlib
+import sys
 import unicodedata
 import unittest
 
 SCRIPT = pathlib.Path(__file__).parents[1] / "pp_path_normalize.py"
+sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("pp_path_normalize", SCRIPT)
 pp = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader
