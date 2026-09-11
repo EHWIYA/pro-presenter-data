@@ -16,4 +16,7 @@ done
 # If any of the three are dirty in the index sense with absolute paths only in WT
 # and user is committing other files, still fine. If WT has absolute and they're
 # part of commit via -a, clean filter handles it.
+PYTHON="$(command -v python3 2>/dev/null || command -v python 2>/dev/null)"
+[ -n "$PYTHON" ] || { echo "ERROR: Python 3 not found." >&2; exit 1; }
+"$PYTHON" scripts/check.py || exit 1
 exit 0

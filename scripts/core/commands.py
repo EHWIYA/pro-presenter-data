@@ -16,12 +16,15 @@ def _run(command: list[str]) -> list[str]:
 
 
 def _powershell() -> list[str]:
+    powershell = shutil.which("powershell")
+    if not powershell:
+        return []
     code = (
         "$e=@(); Get-ChildItem scripts -Recurse -Filter *.ps1|%{"
         "$t=$null;$x=$null;[Management.Automation.Language.Parser]::ParseFile("
         "$_.FullName,[ref]$t,[ref]$x)|Out-Null;if($x){$e+=$x}};if($e){$e;exit 1}"
     )
-    return _run(["powershell", "-NoProfile", "-Command", code])
+    return _run([powershell, "-NoProfile", "-Command", code])
 
 
 def _bash() -> list[str]:
@@ -38,4 +41,5 @@ def command_errors() -> list[str]:
     errors += _powershell()
     errors += _bash()
     errors += _run(["git", "diff", "--check"])
+    errors += _run(["git", "diff", "--cached", "--check"])
     return errors
