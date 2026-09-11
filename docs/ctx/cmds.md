@@ -8,6 +8,7 @@ python -m unittest discover -s scripts/tests -v
 python scripts/path.py status
 powershell -File scripts/git-setup.ps1
 powershell -File scripts/auto-setup.ps1
+powershell -File scripts/windows-repair.ps1
 ```
 
 Mac에서는 `python` 대신 `python3` 사용. Git 초기 설정에는

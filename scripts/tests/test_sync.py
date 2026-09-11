@@ -30,6 +30,12 @@ class SyncSafetyTests(unittest.TestCase):
         self.assertLess(repair, warning)
         self.assertLess(warning, assets)
 
+    def test_admin_repair_is_narrow_and_one_shot(self):
+        repair = self.read("scripts/windows-repair.ps1")
+        for phrase in ("Gaussian Mixture Model*1911", "DISM.exe", "sfc.exe", "pnputil.exe"):
+            self.assertIn(phrase, repair)
+        self.assertNotIn("Register-ScheduledTask", repair)
+
 
 if __name__ == "__main__":
     unittest.main()
