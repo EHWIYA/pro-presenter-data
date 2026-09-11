@@ -8,7 +8,7 @@
 1. rclone을 설치한다.
 2. Nextcloud 앱 비밀번호를 만든다.
 3. `rclone config`에서 WebDAV 원격 `pp-media`를 등록한다.
-4. Windows는 `scripts/setup-auto-sync-windows.ps1`을 실행한다.
+4. Windows는 `scripts/auto-setup.ps1`을 실행한다.
 5. Mac은 제공된 launchd plist를 등록한다.
 
 ## 운영 규칙

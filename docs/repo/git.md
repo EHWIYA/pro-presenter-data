@@ -7,13 +7,13 @@
 
 | OS | 한 번 실행할 명령 |
 |---|---|
-| Windows | `powershell -File scripts/setup-git-filters.ps1` |
-| Mac | `./scripts/setup-git-filters.sh` |
+| Windows | `powershell -File scripts/git-setup.ps1` |
+| Mac | `./scripts/git-setup.sh` |
 
 ## 운영 순서
 
 1. ProPresenter를 종료하고 `git pull --rebase`를 실행한다.
-2. 열기 직전에 `python scripts/pp_path_normalize.py smudge-files`를 실행한다.
+2. 열기 직전에 `python scripts/path.py smudge-files`를 실행한다.
 3. 편집 후 Git 자산만 stage, commit, push한다.
 4. clean filter가 경로를 portable 형식으로 저장한다.
 

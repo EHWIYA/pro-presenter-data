@@ -21,7 +21,7 @@
 
 - 문맥 조회는 `python scripts/ctx.py <topic>`을 사용한다.
 - 전체 검사는 `python scripts/check.py`를 사용한다.
-- 경로 변환은 `python scripts/pp_path_normalize.py`만 사용한다.
+- 경로 변환은 `python scripts/path.py`만 사용한다.
 
 문서 목차는 [docs/index.md](docs/index.md), 저장소 운영은
 [docs/repo/git.md](docs/repo/git.md)를 참고한다.

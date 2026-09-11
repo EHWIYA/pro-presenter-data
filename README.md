@@ -13,8 +13,8 @@ winget install rclone.rclone
 git clone https://github.com/EHWIYA/pro-presenter-data.git "$env:USERPROFILE\Documents\pro-presenter"
 cd "$env:USERPROFILE\Documents\pro-presenter"
 git lfs install
-powershell -ExecutionPolicy Bypass -File scripts/setup-git-filters.ps1
-powershell -ExecutionPolicy Bypass -File scripts/setup-auto-sync-windows.ps1
+powershell -ExecutionPolicy Bypass -File scripts/git-setup.ps1
+powershell -ExecutionPolicy Bypass -File scripts/auto-setup.ps1
 ```
 
 Nextcloud 원격 이름은 `pp-media`로 설정한다. 앱 비밀번호를 사용하고,
