@@ -23,4 +23,5 @@ GitHub 저장소는 `EHWIYA/pro-presenter-data` 하나만 사용. ProPresenter�
 Windows는 로그인과 ProPresenter 종료 뒤 자동 동기화. Mac은 Git 경로
 변환과 로그인 시 Nextcloud 동기화만 지원.
 
-→ [flow.md](flow.md) · [rules.md](rules.md) · [../repo/layout.md](../repo/layout.md)
+→ [flow.md](flow.md) · [rules.md](rules.md) · [pc.md](pc.md) ·
+[../repo/layout.md](../repo/layout.md)

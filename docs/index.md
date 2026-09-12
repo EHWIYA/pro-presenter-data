@@ -7,6 +7,7 @@
 |---|---|---|
 | 규칙 | [rules/base.md](rules/base.md) | 공통 작업 규칙 |
 | 시스템 | [sys/map.md](sys/map.md) | 전체 구성과 저장소 |
+| 시스템 | [sys/pc.md](sys/pc.md) | Windows 운영 PC의 점검 정보 |
 | 저장소 | [repo/layout.md](repo/layout.md) | Show Directory 구조 |
 | 저장소 | [repo/git.md](repo/git.md) | Git과 경로 변환 |
 | 저장소 | [repo/media.md](repo/media.md) | Nextcloud 미디어 |
