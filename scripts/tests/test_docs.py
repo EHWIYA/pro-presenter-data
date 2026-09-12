@@ -3,6 +3,7 @@ import pathlib
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
+from scripts.core.context import stale
 
 
 class DocumentationRuleTests(unittest.TestCase):
@@ -29,6 +30,9 @@ class DocumentationRuleTests(unittest.TestCase):
         for phrase in retired:
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, text)
+
+    def test_context_cache_ignores_checkout_line_endings(self):
+        self.assertEqual([], stale())
 
 
 if __name__ == "__main__":

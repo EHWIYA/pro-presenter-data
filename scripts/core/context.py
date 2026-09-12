@@ -20,7 +20,8 @@ def topic_files() -> list[str]:
 
 
 def digest(relative: str) -> str:
-    return hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()[:12]
+    content = (ROOT / relative).read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(content).hexdigest()[:12]
 
 
 def current_hashes() -> dict[str, str]:

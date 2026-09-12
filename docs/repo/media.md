@@ -16,6 +16,7 @@
 - `Media/Assets`의 `git add` 또는 커밋 금지.
 - 미디어 파일 이름 변경 시 `.pro` 파일 안의 연결도 함께 변경.
 - 실패 기록은 `.nextcloud-sync`에서 확인.
+- `401`·`403`은 NAS의 Nextcloud 프록시와 WebDAV 권한 확인.
 - `.bat`와 `.sh`에는 영문, 숫자, 기본 기호만 사용.
 - 한글 NAS 경로는 rclone 연결 주소에 URL 인코딩 형식으로 저장.
 

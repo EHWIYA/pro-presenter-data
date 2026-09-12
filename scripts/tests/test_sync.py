@@ -36,6 +36,5 @@ class SyncSafetyTests(unittest.TestCase):
             self.assertIn(phrase, repair)
         self.assertNotIn("Register-ScheduledTask", repair)
 
-
 if __name__ == "__main__":
     unittest.main()

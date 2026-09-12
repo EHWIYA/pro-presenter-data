@@ -5,6 +5,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+. (Join-Path $PSScriptRoot "task-definitions.ps1")
 $SyncScript = Join-Path $RepoRoot "scripts\windows-auto-sync.ps1"
 $WatcherScript = Join-Path $RepoRoot "scripts\windows-propresenter-watcher.vbs"
 $UserId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
@@ -25,20 +26,22 @@ foreach ($Path in @($SyncScript, $WatcherScript)) {
 $StartupArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -Mode Startup"
 $SessionArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -Mode Session"
 
-Register-ScheduledTask -TaskName "PP-StartupSync" `
-    -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument $StartupArgs -WorkingDirectory $RepoRoot) `
-    -Trigger $Trigger -Principal $Principal -Settings $DefaultSettings `
-    -Description "로그인 시 Git과 Nextcloud를 동기화하고 예약 작업을 복구" -Force | Out-Null
+$StartupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $StartupArgs -WorkingDirectory $RepoRoot
+$SessionAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $SessionArgs -WorkingDirectory $RepoRoot
+$WatcherAction = New-ScheduledTaskAction -Execute "wscript.exe" -Argument "`"$WatcherScript`"" -WorkingDirectory $RepoRoot
 
-Register-ScheduledTask -TaskName "PP-SessionSync" `
-    -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument $SessionArgs -WorkingDirectory $RepoRoot) `
-    -Principal $Principal -Settings $DefaultSettings `
-    -Description "ProPresenter 종료 후 Git과 Nextcloud 동기화를 별도 창에서 실행" -Force | Out-Null
+Register-ScheduledTaskIfNeeded "PP-StartupSync" $StartupAction $Principal $DefaultSettings `
+    "로그인 시 Git과 Nextcloud를 동기화하고 예약 작업을 복구" $Trigger
+Register-ScheduledTaskIfNeeded "PP-SessionSync" $SessionAction $Principal $DefaultSettings `
+    "ProPresenter 종료 후 Git과 Nextcloud 동기화를 별도 창에서 실행"
+Register-ScheduledTaskIfNeeded "PP-SessionWatcher" $WatcherAction $Principal $WatcherSettings `
+    "ProPresenter 종료 시 자동 커밋, push, Nextcloud 동기화 실행" $Trigger
 
-Register-ScheduledTask -TaskName "PP-SessionWatcher" `
-    -Action (New-ScheduledTaskAction -Execute "wscript.exe" -Argument "`"$WatcherScript`"" -WorkingDirectory $RepoRoot) `
-    -Trigger $Trigger -Principal $Principal -Settings $WatcherSettings `
-    -Description "ProPresenter 종료 시 자동 커밋, push, Nextcloud 동기화 실행" -Force | Out-Null
+$RetiredName = "ProPresenter-VenueAgent-Watcher"
+if (Get-ScheduledTask -TaskName $RetiredName -ErrorAction SilentlyContinue) {
+    try { Unregister-ScheduledTask -TaskName $RetiredName -Confirm:$false }
+    catch { Write-Warning "폐기된 예약 작업을 삭제하지 못했습니다. $($_.Exception.Message)" }
+}
 
 if ($StartWatcher) {
     Start-ScheduledTask -TaskName "PP-SessionWatcher"

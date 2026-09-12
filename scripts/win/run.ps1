@@ -15,8 +15,8 @@ function Invoke-RcloneQuiet {
     param([string[]]$Arguments)
     $previous = $ErrorActionPreference
     try {
-        $ErrorActionPreference = "Continue"
-        $output = & rclone @Arguments 2>$null
+        $ErrorActionPreference = "SilentlyContinue"
+        $output = & rclone @Arguments 2>&1 | Out-String
         $code = $LASTEXITCODE
     } finally {
         $ErrorActionPreference = $previous
