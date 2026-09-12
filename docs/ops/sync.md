@@ -17,6 +17,11 @@ Git이 실패해도 Nextcloud 동기화는 별도로 시도. 네트워크는 5�
 중단하고 서버 프록시와 WebDAV 권한을 확인. 예약 작업은 현재 정의와 다를
 때만 다시 등록하고, 폐기된 `ProPresenter-VenueAgent-Watcher`는 제거.
 
+NAS의 CasaOS 저장소 서비스를 재시작할 때는
+`scripts/nas-casaos-data-containers.sh`로 `/DATA` 사용 컨테이너를 먼저
+정지하고, mergerfs 연결 확인 뒤 다시 시작. 빈 `/DATA` 위에 앱 폴더가
+먼저 만들어져 저장소 결합이 실패하는 상황 방지.
+
 | 예약 작업 | 역할 |
 |---|---|
 | `PP-StartupSync` | 로그인 동기화와 빠진 예약 작업 복구 |

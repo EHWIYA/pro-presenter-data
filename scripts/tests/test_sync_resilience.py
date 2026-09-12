@@ -34,6 +34,15 @@ class SyncResilienceTests(unittest.TestCase):
         for phrase in ("401", "403", "Unauthorized", "Forbidden"):
             self.assertIn(phrase, batch)
 
+    def test_nas_stops_data_containers_before_storage_restart(self):
+        script = self.read("scripts/nas-casaos-data-containers.sh")
+        unit = self.read("scripts/nas-casaos-storage.service.conf")
+        for phrase in ("docker info", "docker stop", "mountpoint -q /DATA",
+                       "docker start", "/run/casaos-data-containers", "-P0"):
+            self.assertIn(phrase, script)
+        for phrase in ("ExecStop", "ExecStartPost", "PIDFile="):
+            self.assertIn(phrase, unit)
+
 
 if __name__ == "__main__":
     unittest.main()
