@@ -17,3 +17,4 @@ Windows는 `scripts/git-setup.ps1`, Mac은 `scripts/git-setup.sh`로 등록.
 | `git checkout` 또는 `git pull` | 파일 변경 없음 |
 
 Mac에서는 실행 권한 필요. `setup.sh`가 `chmod +x`를 자동 실행.
+Windows에서는 실행 가능한 `python3`가 없으면 설치된 `python` 사용.

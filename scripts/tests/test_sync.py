@@ -19,7 +19,8 @@ class SyncSafetyTests(unittest.TestCase):
     def test_scheduled_actions_use_stable_entrypoints_and_finish(self):
         tasks = self.read("scripts/win/tasks.ps1")
         self.assertIn('scripts\\windows-auto-sync.ps1', tasks)
-        self.assertIn('scripts\\windows-propresenter-watcher.vbs', tasks)
+        self.assertIn('scripts\\win\\watch.vbs', tasks)
+        self.assertNotIn('scripts\\windows-propresenter-watcher.vbs', tasks)
         self.assertNotIn("-WaitForKey", tasks)
 
     def test_task_repair_failure_does_not_block_sync(self):
@@ -29,6 +30,11 @@ class SyncSafetyTests(unittest.TestCase):
         assets = main.index("Initialize-GitAssets", warning)
         self.assertLess(repair, warning)
         self.assertLess(warning, assets)
+
+    def test_pre_commit_uses_a_working_python(self):
+        hook = self.read("scripts/hooks/pre-commit")
+        self.assertIn("for candidate in python3 python", hook)
+        self.assertIn('"$candidate" --version', hook)
 
     def test_admin_repair_is_narrow_and_one_shot(self):
         repair = self.read("scripts/windows-repair.ps1")

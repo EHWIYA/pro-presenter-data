@@ -28,5 +28,8 @@ NAS의 CasaOS 저장소 서비스를 재시작할 때는
 | `PP-SessionWatcher` | ProPresenter 종료 확인 |
 | `PP-SessionSync` | ProPresenter 종료 후 동기화 실행 |
 
+`PP-SessionWatcher`는 `scripts/win/watch.vbs`를 직접 실행. 같은 로그인에서
+중복 실행되지 않도록 예약 작업의 `IgnoreNew` 설정 사용.
+
 Mac은 로그인 시 Nextcloud 동기화만 지원. 정상 종료 전 동기화 완료 확인.
 정전과 강제 종료로 빠진 작업은 다음 로그인 동기화에서 복구.
