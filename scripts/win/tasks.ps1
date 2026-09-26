@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 . (Join-Path $PSScriptRoot "task-definitions.ps1")
 $SyncScript = Join-Path $RepoRoot "scripts\windows-auto-sync.ps1"
-$WatcherScript = Join-Path $RepoRoot "scripts\win\watch.vbs"
+$WatcherScript = Join-Path $RepoRoot "scripts\windows-propresenter-watcher.vbs"
 $UserId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 # Git, rclone과 감시기는 관리자 권한이 필요 없으므로 사용자가 직접 복구한다.
 $Principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive -RunLevel Limited

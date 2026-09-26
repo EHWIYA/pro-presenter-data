@@ -3,4 +3,5 @@ Dim fso, shell, target
 Set fso = CreateObject("Scripting.FileSystemObject")
 Set shell = CreateObject("WScript.Shell")
 target = fso.BuildPath(fso.GetParentFolderName(WScript.ScriptFullName), "win\watch.vbs")
-shell.Run "wscript.exe """ & target & """", 0, False
+' Keep this process alive so Task Scheduler can enforce IgnoreNew.
+shell.Run "wscript.exe """ & target & """", 0, True

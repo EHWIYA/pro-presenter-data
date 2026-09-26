@@ -18,9 +18,11 @@ class SyncSafetyTests(unittest.TestCase):
 
     def test_scheduled_actions_use_stable_entrypoints_and_finish(self):
         tasks = self.read("scripts/win/tasks.ps1")
+        watcher = self.read("scripts/windows-propresenter-watcher.vbs")
         self.assertIn('scripts\\windows-auto-sync.ps1', tasks)
-        self.assertIn('scripts\\win\\watch.vbs', tasks)
-        self.assertNotIn('scripts\\windows-propresenter-watcher.vbs', tasks)
+        self.assertIn('scripts\\windows-propresenter-watcher.vbs', tasks)
+        self.assertIn(', 0, True', watcher)
+        self.assertNotIn(', 0, False', watcher)
         self.assertNotIn("-WaitForKey", tasks)
 
     def test_task_repair_failure_does_not_block_sync(self):
