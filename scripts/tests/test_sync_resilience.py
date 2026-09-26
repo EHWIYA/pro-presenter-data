@@ -23,12 +23,13 @@ class SyncResilienceTests(unittest.TestCase):
         self.assertIn('"ProPresenter-VenueAgent-Watcher"', tasks)
         self.assertIn("Unregister-ScheduledTask", tasks)
 
-    def test_permanent_nextcloud_errors_fail_fast(self):
+    def test_nextcloud_access_errors_retry_briefly_then_fail(self):
         cloud = self.read("scripts/win/cloud.ps1")
         batch = self.read("scripts/win/sync.bat")
         self.assertIn("Test-PermanentNextcloudError", cloud)
         self.assertIn("401|403", cloud)
-        self.assertIn("$Check.Output", cloud)
+        self.assertIn("$attempt -ge 12", cloud)
+        self.assertIn("PP_SYNC_FORBIDDEN_RETRIES", batch)
         self.assertIn("findstr", batch)
         self.assertIn('type nul > "%LOG%"', batch)
         for phrase in ("401", "403", "Unauthorized", "Forbidden"):

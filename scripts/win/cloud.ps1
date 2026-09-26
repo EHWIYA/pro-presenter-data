@@ -14,7 +14,7 @@ function Wait-NextcloudReady {
             Write-Host "      [준비 완료] Nextcloud에 연결되었습니다." -ForegroundColor Green
             return
         }
-        if (Test-PermanentNextcloudError $check) {
+        if ((Test-PermanentNextcloudError $check) -and $attempt -ge 12) {
             throw "Nextcloud 서버가 접근을 거부했습니다(401/403). 서버 프록시와 WebDAV 권한을 확인하세요."
         }
         if ($attempt -eq $MaxAttempts) {
