@@ -34,6 +34,10 @@ class DocumentationRuleTests(unittest.TestCase):
     def test_context_cache_ignores_checkout_line_endings(self):
         self.assertEqual([], stale())
 
+    def test_local_environment_file_is_ignored(self):
+        patterns = (ROOT / ".gitignore").read_text(encoding="utf-8-sig").splitlines()
+        self.assertIn(".env", patterns)
+
 
 if __name__ == "__main__":
     unittest.main()
