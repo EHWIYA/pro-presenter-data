@@ -1,5 +1,6 @@
 # 저장소 경로 대상 파일의 일괄 변환과 상태 출력을 처리한다.
 import sys
+from urllib.parse import unquote_to_bytes
 
 from .config import PORTABLE_ROOT, TARGETS, is_windows, repo_root, runtime_root
 from .detect import posix_roots, win_roots
@@ -22,6 +23,9 @@ def transform_files(mode: str) -> None:
 
 
 def status() -> None:
+    def normalize(value):
+        return unquote_to_bytes(value).replace(b"/", b"\\").lower()
+
     root = repo_root()
     portable, runtime = PORTABLE_ROOT.encode(), runtime_root().encode()
     for relative in TARGETS:
@@ -30,7 +34,7 @@ def status() -> None:
             print(f"{relative}: missing")
             continue
         data = path.read_bytes()
-        other_win = win_roots(data) - {runtime, portable}
+        other_win = {normalize(value) for value in win_roots(data)} - {normalize(runtime), normalize(portable)}
         other_mac = posix_roots(data) - {runtime}
         platform = "win" if is_windows() else "posix"
         print(f"{relative}: size={len(data)} portable={data.count(portable)} "

@@ -38,4 +38,4 @@ def win_roots(data: bytes) -> set[bytes]:
 
 
 def posix_roots(data: bytes) -> set[bytes]:
-    return set(re.findall(rb"/Users/[^/]+/Documents/pro-presenter", data))
+    return set(re.findall(rb"(?<!:)/Users/[^/]+/Documents/pro-presenter", data))
