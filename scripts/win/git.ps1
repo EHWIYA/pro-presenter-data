@@ -1,5 +1,20 @@
 ﻿# Git 자산의 준비, pull, 경로 적용, push 순서를 실행한다.
+function Assert-GitSyncReady {
+    foreach ($state in @("rebase-merge", "rebase-apply", "MERGE_HEAD", "CHERRY_PICK_HEAD", "REVERT_HEAD")) {
+        $statePath = git rev-parse --git-path $state
+        if ($LASTEXITCODE -ne 0) { throw "Git 저장소 상태를 확인할 수 없습니다." }
+        if (Test-Path -LiteralPath $statePath) {
+            throw "GIT_SYNC_BLOCKED: 중단된 Git 작업($state)이 있습니다. git status로 확인하고 해결 후 다시 실행하세요."
+        }
+    }
+    git symbolic-ref --quiet HEAD | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        throw "GIT_SYNC_BLOCKED: 브랜치에서 분리된 HEAD입니다. 현재 커밋을 보존하고 브랜치 복구 후 다시 실행하세요."
+    }
+}
+
 function Initialize-GitAssets {
+    Assert-GitSyncReady
     Invoke-Checked "경로 필터 확인" {
         git config --get filter.pp-paths.clean | Out-Null
     }

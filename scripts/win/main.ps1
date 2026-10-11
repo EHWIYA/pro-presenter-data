@@ -22,8 +22,8 @@ try {
             }
         } catch { Add-SyncWarning "예약 작업 복구 실패. 자료 동기화는 계속합니다. $($_.Exception.Message)" }
     }
-    Initialize-GitAssets
     try {
+        Initialize-GitAssets
         Invoke-GitRemote
         $script:GitResult = "정상 완료"
     } catch { $script:GitResult = "실패"; Add-SyncError $_.Exception.Message }
