@@ -4,7 +4,8 @@ function Assert-GitSyncReady {
         $statePath = git rev-parse --git-path $state
         if ($LASTEXITCODE -ne 0) { throw "Git 저장소 상태를 확인할 수 없습니다." }
         if (Test-Path -LiteralPath $statePath) {
-            throw "GIT_SYNC_BLOCKED: 중단된 Git 작업($state)이 있습니다. git status로 확인하고 해결 후 다시 실행하세요."
+            $conflicts = @(git -c core.quotepath=false diff --name-only --diff-filter=U) -join ", "
+            throw "GIT_SYNC_BLOCKED: 중단된 Git 작업($state)이 있습니다. 충돌 파일: $conflicts. git status로 확인하고 해결 후 다시 실행하세요."
         }
     }
     git symbolic-ref --quiet HEAD | Out-Null
@@ -35,7 +36,8 @@ function Initialize-GitAssets {
 }
 
 function Invoke-GitRemote {
-    Invoke-Checked "GitHub 최신 내용 받기" { git pull --rebase }
+    try { Invoke-Checked "GitHub 최신 내용 받기" { git pull --rebase } }
+    catch { Assert-GitSyncReady; throw }
     Invoke-Checked "이 PC용 경로 적용" { python scripts/path.py smudge-files }
     Invoke-Checked "GitHub에 올리기" { git push }
 }
