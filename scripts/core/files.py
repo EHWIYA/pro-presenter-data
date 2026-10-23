@@ -4,6 +4,7 @@ from urllib.parse import unquote_to_bytes
 
 from .config import PORTABLE_ROOT, TARGETS, is_windows, repo_root, runtime_root
 from .detect import posix_roots, win_roots
+from .index import refresh_unchanged_targets
 from .transform import transform
 
 
@@ -20,6 +21,8 @@ def transform_files(mode: str) -> None:
             print(f"{mode}: {relative} ({len(source)} → {len(output)})", file=sys.stderr)
         else:
             print(f"{mode}: {relative} (unchanged)", file=sys.stderr)
+    if mode == "smudge":
+        refresh_unchanged_targets()
 
 
 def status() -> None:

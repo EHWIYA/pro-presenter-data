@@ -7,7 +7,7 @@ Windows 로그인과 ProPresenter 종료 시 사용자 권한으로 Git과 Nextc
 1. Windows의 예약 작업을 현재 사용자 권한과 고정 진입점으로 복구하기.
 2. ProPresenter 종료와 Git 필터 확인하기.
 3. Git으로 관리하는 파일만 `git add`하고 변경이 있을 때만 자동 커밋하기.
-4. `git pull`로 원격 변경을 받은 뒤 이 PC의 경로를 적용하고 `git push`하기.
+4. `git pull --no-rebase`로 원격 변경을 받은 뒤 이 PC의 경로를 적용하고 `git push`하기.
 5. Nextcloud가 연결되면 미디어를 양방향으로 동기화하기.
 6. 결과와 기록 파일 경로 표시하기. 예약 작업 복구 실패는 경고로만 기록하기.
 

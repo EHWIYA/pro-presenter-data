@@ -1,9 +1,7 @@
 ﻿# Windows Git 경로 필터와 hook 경로를 등록한다.
 function Set-PathGitConfig {
     param([string]$Python)
-    $fso = New-Object -ComObject Scripting.FileSystemObject
-    $shortPython = $fso.GetFile($Python).ShortPath.Replace("\", "/")
-    $filter = "$shortPython scripts/path.py"
+    $filter = ('\"{0}\" scripts/path.py' -f $Python.Replace("\", "/"))
     git config --replace-all filter.pp-paths.clean "$filter clean"
     git config --replace-all filter.pp-paths.smudge "$filter smudge"
     git config filter.pp-paths.required true
