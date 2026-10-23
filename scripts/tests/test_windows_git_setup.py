@@ -20,7 +20,8 @@ class WindowsGitSetupTests(unittest.TestCase):
             python = r"C:\Program Files\Python\python.exe"
             code = (f". '{helper}'; function New-Object {{ throw '8.3 unavailable' }}; "
                     f"Set-PathGitConfig -Python '{python}'")
-            result = subprocess.run(["powershell", "-NoProfile", "-Command", code],
+            result = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy",
+                                     "Bypass", "-Command", code],
                                     cwd=repo, capture_output=True)
             self.assertEqual(0, result.returncode,
                              (result.stdout + result.stderr).decode(errors="replace"))
@@ -30,7 +31,8 @@ class WindowsGitSetupTests(unittest.TestCase):
             self.assertEqual('"C:/Program Files/Python/python.exe" scripts/path.py clean',
                              configured)
             actual = code.replace(python, sys.executable.replace("'", "''"))
-            subprocess.run(["powershell", "-NoProfile", "-Command", actual],
+            subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy",
+                            "Bypass", "-Command", actual],
                            cwd=repo, check=True, capture_output=True)
             filtered = subprocess.check_output(
                 ["git", "hash-object", "--path=Playlists/Library", "Playlists/Library"], cwd=repo)

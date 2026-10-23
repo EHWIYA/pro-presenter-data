@@ -11,6 +11,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 @unittest.skipUnless(shutil.which("powershell"), "Windows PowerShell required")
 class WindowsPullTests(unittest.TestCase):
     def test_pull_from_previous_pc_commit_after_smudge(self):
+        revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT).decode().strip()
         with tempfile.TemporaryDirectory() as tmp:
             repo = pathlib.Path(tmp) / "other-pc"
             subprocess.run(["git", "clone", "--shared", str(ROOT), str(repo)],
@@ -37,12 +38,12 @@ class WindowsPullTests(unittest.TestCase):
             subprocess.run(["git", "add", "--", *targets], cwd=repo,
                            check=True, capture_output=True)
             subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo, check=True)
-            result = subprocess.run(["git", "pull", "--no-rebase", "origin", "main"],
+            result = subprocess.run(["git", "pull", "--no-rebase", "origin", revision],
                                     cwd=repo, capture_output=True)
             self.assertEqual(0, result.returncode,
                              (result.stdout + result.stderr).decode(errors="replace"))
-            self.assertEqual(subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT),
-                             subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo))
+            self.assertEqual(revision, subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], cwd=repo).decode().strip())
 
 
 if __name__ == "__main__":
