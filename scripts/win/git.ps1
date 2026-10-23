@@ -36,7 +36,7 @@ function Initialize-GitAssets {
 }
 
 function Invoke-GitRemote {
-    try { Invoke-Checked "GitHub 최신 내용 받기" { git pull --rebase } }
+    try { Invoke-Checked "GitHub 최신 내용 받기" { git pull --no-rebase } }
     catch { Assert-GitSyncReady; throw }
     Invoke-Checked "이 PC용 경로 적용" { python scripts/path.py smudge-files }
     Invoke-Checked "GitHub에 올리기" { git push }
