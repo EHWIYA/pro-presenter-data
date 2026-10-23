@@ -10,6 +10,7 @@ from core.context import ROOT, load_topics
 
 def git(*arguments: str) -> str:
     result = subprocess.run(["git", *arguments], cwd=ROOT, text=True,
+                            encoding="utf-8", errors="replace",
                             capture_output=True, check=False)
     return result.stdout.strip()
 

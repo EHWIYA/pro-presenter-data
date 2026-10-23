@@ -7,9 +7,9 @@ Fonts/*.otf filter=lfs diff=lfs merge=lfs -text
 
 # 재생목록·라이브러리 인덱스 — working tree=이 PC 절대경로, Git=%USERPROFILE% portable
 # 각 PC 1회: powershell -File scripts/git-setup.ps1
-Playlists/Library filter=pp-paths
-Playlists/Media filter=pp-paths
-Libraries/LibraryData filter=pp-paths
+Playlists/Library filter=pp-paths -diff -text
+Playlists/Media filter=pp-paths -diff -text
+Libraries/LibraryData filter=pp-paths -diff -text
 
 # Mac 셸 스크립트 — Windows 체크아웃 시 CRLF로 바뀌면 실행 안 됨
 *.sh text eol=lf

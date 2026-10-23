@@ -4,6 +4,7 @@ import sys
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 sys.dont_write_bytecode = True
+sys.stdout.reconfigure(errors="backslashreplace")
 
 from core.commands import command_errors
 from core.links import link_errors

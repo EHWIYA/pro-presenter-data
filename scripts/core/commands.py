@@ -8,7 +8,8 @@ from .policy import ROOT
 
 
 def _run(command: list[str]) -> list[str]:
-    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    result = subprocess.run(command, cwd=ROOT, text=True, encoding="utf-8",
+                            errors="replace", capture_output=True, check=False)
     if result.returncode == 0:
         return []
     detail = (result.stderr or result.stdout).strip().splitlines()
