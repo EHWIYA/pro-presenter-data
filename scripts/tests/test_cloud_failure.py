@@ -31,6 +31,7 @@ class CloudFailureTests(unittest.TestCase):
             calls = (folder / "calls.txt").read_text(errors="replace").splitlines()
             self.assertEqual(len(calls), 2)
             self.assertTrue(all("--resync" not in call for call in calls))
+            self.assertTrue(all("--resilient --recover" in call for call in calls))
             self.assertTrue((target / "resync-done").exists())
 
     def test_mac_preserves_failure_exit_code(self):

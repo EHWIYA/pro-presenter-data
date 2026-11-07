@@ -12,7 +12,7 @@ LOG="$STATE_DIR/sync.log"
 
 mkdir -p "$STATE_DIR" "$LOCAL_PATH"
 
-rclone bisync "$REMOTE_NAME:" "$LOCAL_PATH" --create-empty-src-dirs -v --log-file "$LOG"
+rclone bisync "$REMOTE_NAME:" "$LOCAL_PATH" --resilient --recover --create-empty-src-dirs -v --log-file "$LOG"
 SYNC_EXIT=$?
 
 if [ "$SYNC_EXIT" -eq 0 ]; then

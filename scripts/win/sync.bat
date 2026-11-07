@@ -17,7 +17,7 @@ set /a SYNC_ATTEMPT+=1
 echo [Nextcloud] Sync attempt !SYNC_ATTEMPT! of %PP_SYNC_MAX_ATTEMPTS%
 echo [Nextcloud] Local : Media\Assets
 echo [Nextcloud] Remote: %REMOTE_NAME%:
-rclone bisync "%REMOTE_NAME%:" "%LOCAL_PATH%" --create-empty-src-dirs -v --log-file "%LOG%" --progress --stats 1s
+rclone bisync "%REMOTE_NAME%:" "%LOCAL_PATH%" --resilient --recover --create-empty-src-dirs -v --log-file "%LOG%" --progress --stats 1s
 set "SYNC_EXIT=!ERRORLEVEL!"
 if !SYNC_EXIT! EQU 0 (
     echo done > "%MARKER%"
