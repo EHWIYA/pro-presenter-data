@@ -12,13 +12,12 @@ LOG="$STATE_DIR/sync.log"
 
 mkdir -p "$STATE_DIR" "$LOCAL_PATH"
 
-RESYNC_FLAG=""
-[ -f "$MARKER" ] || RESYNC_FLAG="--resync"
+rclone bisync "$REMOTE_NAME:" "$LOCAL_PATH" --create-empty-src-dirs -v --log-file "$LOG"
+SYNC_EXIT=$?
 
-rclone bisync "$REMOTE_NAME:" "$LOCAL_PATH" $RESYNC_FLAG --create-empty-src-dirs -v --log-file "$LOG"
-
-if [ $? -eq 0 ]; then
+if [ "$SYNC_EXIT" -eq 0 ]; then
     echo done > "$MARKER"
 else
     echo "[nextcloud-sync] rclone bisync 실패 — 로그: $LOG" >&2
 fi
+exit "$SYNC_EXIT"

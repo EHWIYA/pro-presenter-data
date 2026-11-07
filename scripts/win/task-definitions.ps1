@@ -1,4 +1,11 @@
 # 기존 예약 작업과 원하는 실행 정의가 같은지 비교하고 필요할 때만 등록한다.
+function Start-WatcherIfNeeded {
+    $watcher = Get-ScheduledTask -TaskName "PP-SessionWatcher" -ErrorAction Stop
+    if ($watcher.State -ne "Running") {
+        Start-ScheduledTask -TaskName "PP-SessionWatcher"
+    }
+}
+
 function Test-ScheduledTaskDefinition {
     param([string]$Name, $Action, [bool]$NeedsTrigger)
     $current = Get-ScheduledTask -TaskName $Name -ErrorAction SilentlyContinue

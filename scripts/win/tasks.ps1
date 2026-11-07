@@ -44,5 +44,5 @@ if (Get-ScheduledTask -TaskName $RetiredName -ErrorAction SilentlyContinue) {
 }
 
 if ($StartWatcher) {
-    Start-ScheduledTask -TaskName "PP-SessionWatcher"
+    Start-WatcherIfNeeded
 }

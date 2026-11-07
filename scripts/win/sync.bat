@@ -14,19 +14,16 @@ if not exist "%LOCAL_PATH%" mkdir "%LOCAL_PATH%"
 type nul > "%LOG%"
 :sync_retry
 set /a SYNC_ATTEMPT+=1
-set "RESYNC_FLAG="
-if not exist "%MARKER%" set "RESYNC_FLAG=--resync"
 echo [Nextcloud] Sync attempt !SYNC_ATTEMPT! of %PP_SYNC_MAX_ATTEMPTS%
 echo [Nextcloud] Local : Media\Assets
 echo [Nextcloud] Remote: %REMOTE_NAME%:
-rclone bisync "%REMOTE_NAME%:" "%LOCAL_PATH%" %RESYNC_FLAG% --create-empty-src-dirs -v --log-file "%LOG%" --progress --stats 1s
+rclone bisync "%REMOTE_NAME%:" "%LOCAL_PATH%" --create-empty-src-dirs -v --log-file "%LOG%" --progress --stats 1s
 set "SYNC_EXIT=!ERRORLEVEL!"
 if !SYNC_EXIT! EQU 0 (
     echo done > "%MARKER%"
     echo [Nextcloud] Sync completed successfully.
     endlocal & exit /b 0
 )
-if exist "%MARKER%" del /q "%MARKER%"
 findstr /i /c:"401" /c:"403" /c:"Unauthorized" /c:"Forbidden" "%LOG%" >nul 2>&1
 if !ERRORLEVEL! EQU 0 (
     set /a FORBIDDEN_COUNT+=1
